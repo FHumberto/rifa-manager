@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".gitignore" />
+  </Folder>
+  <Folder Name="/Source/">
+    <Project Path="src/Rifa.Api/Rifa.Api.csproj" Id="44dfca76-16aa-49f3-a94a-ba47cb93b2ec" />
+    <Project Path="src/Rifa.Application/Rifa.Application.csproj" Id="2cc9e451-8225-4d0d-b3dd-dea300150702" />
+    <Project Path="src/Rifa.Domain/Rifa.Domain.csproj" Id="b9f4e70f-a4c7-4b03-a0c9-915aa237528b" />
+    <Project Path="src/Rifa.Infrastructure/Rifa.Infrastructure.csproj" Id="6c030d70-8ab9-449a-8271-e579aee96634" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="tests/Rifa.Domain.Tests/Rifa.Domain.Tests.csproj" Id="7b530f62-36c2-4808-b318-bf63470ba0d0" />
+    <Project Path="tests/Rifa.Integration.Tests/Rifa.Integration.Tests.csproj" Id="967481c5-c57c-4940-9ba5-98e19f2eabb0" />
+  </Folder>
+</Solution>
