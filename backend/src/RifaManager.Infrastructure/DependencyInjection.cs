@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Rifa.Infrastructure;
+namespace RifaManager.Infrastructure;
 
 public static class DependencyInjection
 {

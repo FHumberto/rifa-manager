@@ -1,4 +1,4 @@
-﻿namespace Rifa.Api;
+namespace RifaManager.Api;
 
 public static class DependencyInjection
 {

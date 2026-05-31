@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Rifa.Api.Controllers;
+namespace RifaManager.Api.Controllers;
 
 [ApiController]
 [Route("/")]
@@ -9,7 +9,7 @@ public sealed class DefaultController : BaseController
 {
     [HttpGet]
     [EndpointSummary("Checagem")]
-    [EndpointDescription("Verifica se a API está funcional.")]
+    [EndpointDescription("Verifica se a API est� funcional.")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     public async Task<IActionResult> Check() => Ok("API OK!");
 }

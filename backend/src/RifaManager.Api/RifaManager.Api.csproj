@@ -11,8 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Rifa.Application\Rifa.Application.csproj" />
-    <ProjectReference Include="..\Rifa.Infrastructure\Rifa.Infrastructure.csproj" />
+    <ProjectReference Include="..\RifaManager.Application\RifaManager.Application.csproj" />
+    <ProjectReference Include="..\RifaManager.Infrastructure\RifaManager.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

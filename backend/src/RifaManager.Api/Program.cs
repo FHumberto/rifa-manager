@@ -1,6 +1,6 @@
-using Rifa.Api;
-using Rifa.Application;
-using Rifa.Infrastructure;
+using RifaManager.Api;
+using RifaManager.Application;
+using RifaManager.Infrastructure;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
