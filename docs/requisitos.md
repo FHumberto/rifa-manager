@@ -30,14 +30,11 @@ O sistema deve permitir cadastrar e editar uma rifa contendo:
 
 ## RF004 - Geração de bilhetes
 
-O sistema deve gerar bilhetes conforme as compras forem registradas, sem exigir uma quantidade máxima de números na criação da rifa.
-
-A numeração dos bilhetes deve ser sequencial dentro de cada rifa.
+O sistema deve gerar bilhetes conforme as compras forem registradas, sem exigir uma quantidade máxima na criação da rifa.
 
 Exemplo:
 
-- primeira compra da rifa gera o bilhete 1
-- compra de 3 bilhetes após o bilhete 10 gera os bilhetes 11, 12 e 13
+- uma compra de 3 bilhetes gera 3 novos bilhetes vinculados ao participante
 
 ## RF005 - Cadastro de participantes
 
@@ -51,13 +48,13 @@ O sistema deve permitir cadastrar participantes contendo:
 
 O sistema deve permitir registrar a compra de um ou mais bilhetes por um participante.
 
-Ao registrar a compra, o sistema deve criar os próximos números sequenciais da rifa e vinculá-los ao participante.
+Ao registrar a compra, o sistema deve criar os bilhetes da rifa e vinculá-los ao participante.
 
 Exemplo:
 
 - participante João
 - quantidade comprada: 3 bilhetes
-- bilhetes gerados: 10, 11 e 12
+- bilhetes gerados: 3
 
 ## RF007 - Controle de pagamento
 
@@ -86,7 +83,6 @@ O sistema deve permitir consultar:
 - bilhetes pagos
 - bilhetes pendentes
 - bilhetes cancelados
-- próximo número a ser gerado
 
 ## RF010 - Sorteio
 
@@ -122,30 +118,24 @@ Exemplo:
 
 # Regras de Negócio
 
-## RN001 - Bilhete único por rifa
-
-Um bilhete não pode pertencer a duas pessoas dentro da mesma rifa.
-
-## RN002 - Sorteio apenas com bilhetes pagos
+## RN001 - Sorteio apenas com bilhetes pagos
 
 Somente bilhetes com pagamento confirmado podem participar do sorteio.
 
-## RN003 - Usuário inativo
+## RN002 - Usuário inativo
 
 Usuários inativos não podem acessar o sistema.
 
-## RN004 - Permissão administrativa
+## RN003 - Permissão administrativa
 
 Apenas administradores podem gerenciar usuários.
 
-## RN005 - Cancelamento de bilhete
+## RN004 - Cancelamento de bilhete
 
 Bilhetes cancelados não devem participar do sorteio.
 
-O número de um bilhete cancelado não deve ser reutilizado em novas compras.
-
-## RN006 - Numeração aberta de bilhetes
+## RN005 - Criação aberta de bilhetes
 
 A rifa não deve possuir limite máximo de bilhetes.
 
-Enquanto a rifa estiver aberta, novas compras devem gerar novos bilhetes sequenciais.
+Enquanto a rifa estiver aberta, novas compras devem gerar novos bilhetes.
