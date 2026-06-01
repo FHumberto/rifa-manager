@@ -1,4 +1,6 @@
+﻿using RifaManager.Domain.Abstractions;
 using RifaManager.Domain.Entities;
+using RifaManager.Domain.Errors;
 
 namespace RifaManager.Domain.Policies;
 
@@ -14,6 +16,6 @@ public static class PoliticaAcesso
     public static void ValidarAcessoAoSistema(Usuario usuario)
     {
         if (!PodeAcessarSistema(usuario))
-            throw new UnauthorizedAccessException("Usuario inativo nao pode acessar o sistema.");
+            throw new DomainException(UsuarioErrors.InativoNaoPodeAcessarSistema);
     }
 }

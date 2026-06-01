@@ -1,5 +1,7 @@
+﻿using RifaManager.Domain.Abstractions;
 using RifaManager.Domain.Entities;
 using RifaManager.Domain.Enums;
+using RifaManager.Domain.Errors;
 
 namespace RifaManager.Domain.Policies;
 
@@ -15,6 +17,6 @@ public static class PoliticaAdministrativa
     public static void ValidarPermissaoParaGerenciarUsuarios(Usuario usuario)
     {
         if (!PodeGerenciarUsuarios(usuario))
-            throw new UnauthorizedAccessException("Somente administradores ativos podem gerenciar usuários.");
+            throw new DomainException(UsuarioErrors.SemPermissaoParaGerenciarUsuarios);
     }
 }

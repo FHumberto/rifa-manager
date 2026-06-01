@@ -1,5 +1,6 @@
-using RifaManager.Domain.Abstractions;
+﻿using RifaManager.Domain.Abstractions;
 using RifaManager.Domain.Enums;
+using RifaManager.Domain.Errors;
 
 namespace RifaManager.Domain.Entities;
 
@@ -63,19 +64,19 @@ public sealed class Bilhete : Entity
     public override void IsValid()
     {
         if (Numero <= 0)
-            throw new ArgumentException("O número do bilhete deve ser maior que zero.");
+            throw new DomainException(BilheteErrors.NumeroInvalido);
 
         if (Participante is null)
-            throw new ArgumentException("O bilhete deve estar associado a um participante.");
+            throw new DomainException(BilheteErrors.ParticipanteObrigatorio);
 
         if (Rifa is null)
-            throw new ArgumentException("O bilhete deve estar associado a uma rifa.");
+            throw new DomainException(BilheteErrors.RifaObrigatoria);
 
         if (UsuarioResponsavel is null)
-            throw new ArgumentException("O bilhete deve estar associado a um usuário responsável.");
+            throw new DomainException(BilheteErrors.UsuarioResponsavelObrigatorio);
 
         if (PagoEm != default && CanceladoEm != default)
-            throw new ArgumentException("Um bilhete não pode ser marcado como pago e cancelado ao mesmo tempo.");
+            throw new DomainException(BilheteErrors.PagoECancelado);
     }
 
     #endregion
@@ -85,7 +86,7 @@ public sealed class Bilhete : Entity
     internal void MarcarComoPago()
     {
         if (Status.Equals(StatusPagamento.Cancelado))
-            throw new InvalidOperationException("Não é possível marcar um bilhete cancelado como pago.");
+            throw new DomainException(BilheteErrors.CanceladoNaoPodeSerPago);
 
         Status = StatusPagamento.Pago;
         PagoEm = DateTime.UtcNow;
@@ -94,7 +95,7 @@ public sealed class Bilhete : Entity
     internal void MarcarComoCancelado()
     {
         if (Status.Equals(StatusPagamento.Pago))
-            throw new ArgumentException("Não é possível marcar um bilhete pago como cancelado.");
+            throw new DomainException(BilheteErrors.PagoNaoPodeSerCancelado);
 
         Status = StatusPagamento.Cancelado;
         CanceladoEm = DateTime.UtcNow;

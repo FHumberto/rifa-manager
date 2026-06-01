@@ -1,4 +1,5 @@
 ﻿using RifaManager.Domain.Abstractions;
+using RifaManager.Domain.Errors;
 
 namespace RifaManager.Domain.Entities;
 
@@ -45,31 +46,31 @@ public sealed class Rifa : Entity
     public override void IsValid()
     {
         if (string.IsNullOrEmpty(Nome))
-            throw new ArgumentException("O nome da rifa é obrigatório.");
+            throw new DomainException(RifaErrors.NomeObrigatorio);
 
         if (string.IsNullOrEmpty(Descricao))
-            throw new ArgumentException("A descrição da rifa é obrigatória.");
+            throw new DomainException(RifaErrors.DescricaoObrigatoria);
 
         if (ValorBilhete <= 0)
-            throw new ArgumentException("O valor do bilhete deve ser maior que zero.");
+            throw new DomainException(RifaErrors.ValorBilheteInvalido);
 
         if (DataSorteio == default)
-            throw new ArgumentException("A data do sorteio é obrigatória.");
+            throw new DomainException(RifaErrors.DataSorteioObrigatoria);
 
         if (DataSorteio < DateOnly.FromDateTime(DateTime.Now))
-            throw new ArgumentException("A data do sorteio deve ser no futuro.");
+            throw new DomainException(RifaErrors.DataSorteioPassada);
 
         if (string.IsNullOrEmpty(Premio))
-            throw new ArgumentException("O prêmio da rifa é obrigatório.");
+            throw new DomainException(RifaErrors.PremioObrigatorio);
     }
 
     private void ValidarAlteracaoDeBilhete(Bilhete bilhete)
     {
         if (Encerrada)
-            throw new InvalidOperationException("Não é possível alterar bilhetes de uma rifa encerrada.");
+            throw new DomainException(RifaErrors.BilheteAlteracaoEmRifaEncerrada);
 
         if (!Bilhetes.Contains(bilhete))
-            throw new ArgumentException("O bilhete informado não pertence a esta rifa.");
+            throw new DomainException(RifaErrors.BilheteNaoPertenceARifa);
     }
 
     #endregion
@@ -90,7 +91,7 @@ public sealed class Rifa : Entity
     public void Encerrar()
     {
         if (Encerrada)
-            throw new InvalidOperationException("A rifa já está encerrada.");
+            throw new DomainException(RifaErrors.JaEncerrada);
 
         Encerrada = true;
     }

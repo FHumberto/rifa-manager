@@ -1,5 +1,6 @@
 ﻿using RifaManager.Domain.Abstractions;
 using RifaManager.Domain.Enums;
+using RifaManager.Domain.Errors;
 using RifaManager.Domain.Policies;
 
 namespace RifaManager.Domain.Entities;
@@ -42,13 +43,13 @@ public sealed class Usuario : Entity
     public override void IsValid()
     {
         if (string.IsNullOrWhiteSpace(Nome))
-            throw new ArgumentException("O nome do usuário é obrigatório.");
+            throw new DomainException(UsuarioErrors.NomeObrigatorio);
 
         if (string.IsNullOrWhiteSpace(Email))
-            throw new ArgumentException("O e-mail do usuário é obrigatório.");
+            throw new DomainException(UsuarioErrors.EmailObrigatorio);
 
         if (!Enum.IsDefined(Perfil))
-            throw new ArgumentException("O perfil do usuário é inválido.");
+            throw new DomainException(UsuarioErrors.PerfilInvalido);
     }
 
     #endregion
@@ -77,5 +78,4 @@ public sealed class Usuario : Entity
     public void ValidarPermissaoParaGerenciarUsuarios() => PoliticaAdministrativa.ValidarPermissaoParaGerenciarUsuarios(this);
 
     #endregion
-
 }

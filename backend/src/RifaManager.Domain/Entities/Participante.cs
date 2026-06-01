@@ -1,4 +1,5 @@
 ﻿using RifaManager.Domain.Abstractions;
+using RifaManager.Domain.Errors;
 
 namespace RifaManager.Domain.Entities;
 
@@ -38,10 +39,10 @@ public sealed class Participante : Entity
     public override void IsValid()
     {
         if (string.IsNullOrEmpty(Nome))
-            throw new ArgumentException("O nome do participante é obrigatório");
+            throw new DomainException(ParticipanteErrors.NomeObrigatorio);
 
         if (string.IsNullOrEmpty(Telefone))
-            throw new ArgumentException("O telefone do participante é obrigatório");
+            throw new DomainException(ParticipanteErrors.TelefoneObrigatorio);
     }
 
     #endregion
