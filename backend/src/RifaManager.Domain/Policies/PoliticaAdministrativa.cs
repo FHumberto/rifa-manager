@@ -1,0 +1,20 @@
+using RifaManager.Domain.Entities;
+using RifaManager.Domain.Enums;
+
+namespace RifaManager.Domain.Policies;
+
+public static class PoliticaAdministrativa
+{
+    public static bool PodeGerenciarUsuarios(Usuario usuario)
+    {
+        ArgumentNullException.ThrowIfNull(usuario);
+
+        return usuario.Ativo && usuario.Perfil == PerfilUsuario.Administrador;
+    }
+
+    public static void ValidarPermissaoParaGerenciarUsuarios(Usuario usuario)
+    {
+        if (!PodeGerenciarUsuarios(usuario))
+            throw new UnauthorizedAccessException("Somente administradores ativos podem gerenciar usuários.");
+    }
+}
