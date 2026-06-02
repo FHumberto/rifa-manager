@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RifaManager.Domain.Entities;
+using RifaManager.Infrastructure.Seeds;
 
 namespace RifaManager.Infrastructure.Mappings;
 
@@ -11,6 +12,7 @@ public sealed class UsuarioMap : IEntityTypeConfiguration<Usuario>
         ConfigureDataStructure(builder);
         ConfigureRelationships(builder);
         ConfigureIndexes(builder);
+        ConfigureSeeds(builder);
     }
 
     private static void ConfigureDataStructure(EntityTypeBuilder<Usuario> builder)
@@ -43,5 +45,9 @@ public sealed class UsuarioMap : IEntityTypeConfiguration<Usuario>
     {
         builder.HasIndex(Usuario => Usuario.Email)
             .IsUnique();
+    }
+    private static void ConfigureSeeds(EntityTypeBuilder<Usuario> builder)
+    {
+        builder.HasData(UsuarioSeed.Data);
     }
 }

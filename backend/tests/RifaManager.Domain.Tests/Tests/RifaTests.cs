@@ -183,5 +183,4 @@ public sealed class RifaTests
 
         exception.Error.ShouldBe(RifaErrors.BilheteNaoPertenceARifa);
     }
-
 }
