@@ -1,6 +1,7 @@
 using RifaManager.Api;
 using RifaManager.Application;
 using RifaManager.Infrastructure;
+using Scalar.AspNetCore;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -10,9 +11,20 @@ builder.Services.AddInfrastructure();
 
 WebApplication app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 {
     app.MapOpenApi();
+    app.MapScalarApiReference(options =>
+    {
+        options.WithTitle("Rifa Manager API")
+               .WithTheme(ScalarTheme.Default)
+               .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient)
+               .WithOpenApiRoutePattern("/openapi/{documentName}.json")
+               .SortTagsAlphabetically()
+               .SortOperationsByMethod()
+               .ExpandAllTags()
+               .HideDeveloperTools();
+    });
 }
 
 app.UseHttpsRedirection();

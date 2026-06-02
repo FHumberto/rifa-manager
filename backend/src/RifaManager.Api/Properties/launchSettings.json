@@ -7,6 +7,7 @@
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
+      "launchUrl": "scalar",
       "applicationUrl": "https://localhost:7224",
       "environmentVariables":
       {
