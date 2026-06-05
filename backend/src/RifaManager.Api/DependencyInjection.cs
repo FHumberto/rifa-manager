@@ -11,7 +11,7 @@ public static class DependencyInjection
         services.AddProblemDetails();
         services.AddExceptionHandler<ExceptionMiddleware>();
         services.AddControllers();
-        services.AddOpenApi();
+        services.AddOpenApiDocs();
 
         return services;
     }
