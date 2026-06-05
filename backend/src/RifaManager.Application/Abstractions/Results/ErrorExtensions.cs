@@ -5,12 +5,14 @@ namespace RifaManager.Application.Abstractions.Results;
 
 public static class ErrorExtensions
 {
-    public static Result<T> ToInvalidResult<T>(this Error error)
+    public static Result<T> ToResult<T>(this Error error)
     {
-        return Result<T>.Invalid(new ValidationError
+        return error.ErrorType switch
         {
-            Identifier = error.Code,
-            ErrorMessage = error.Description
-        });
+            ErrorType.Validation => Result<T>.Invalid(new ValidationError(error.Code, error.Description)),
+            ErrorType.NotFound => Result<T>.NotFound(error.Code, error.Description),
+            ErrorType.Conflict => Result<T>.Conflict(error.Code, error.Description),
+            _ => Result<T>.Error($"{error.Code}: {error.Description}")
+        };
     }
 }

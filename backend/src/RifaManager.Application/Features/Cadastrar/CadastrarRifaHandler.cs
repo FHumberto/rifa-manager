@@ -12,7 +12,7 @@ public sealed class CadastrarRifaHandler(IRifaRepository rifaRepository, IUnitOf
     public async Task<Result<CadastrarRifaResponse>> Execute(CadastrarRifaRequest request)
     {
         if (request is null)
-            return RifaErrors.RequestObrigatorio.ToInvalidResult<CadastrarRifaResponse>();
+            return RifaErrors.RequestObrigatorio.ToResult<CadastrarRifaResponse>();
 
         try
         {
@@ -25,7 +25,7 @@ public sealed class CadastrarRifaHandler(IRifaRepository rifaRepository, IUnitOf
         }
         catch (DomainException exception)
         {
-            return exception.Error.ToInvalidResult<CadastrarRifaResponse>();
+            return exception.Error.ToResult<CadastrarRifaResponse>();
         }
     }
 }

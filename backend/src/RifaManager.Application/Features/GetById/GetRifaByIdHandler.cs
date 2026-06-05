@@ -11,12 +11,12 @@ public sealed class GetRifaByIdHandler(IRifaRepository rifaRepository) : IGetRif
     public async Task<Result<GetRifaByIdResponse>> Execute(Guid id)
     {
         if (id == Guid.Empty)
-            return EntityErrors.EntityIdInvalid.ToInvalidResult<GetRifaByIdResponse>();
+            return EntityErrors.EntityIdInvalid.ToResult<GetRifaByIdResponse>();
 
         Rifa? rifa = await rifaRepository.GetByIdAsync(id);
 
         return rifa is null
-            ? Result<GetRifaByIdResponse>.NotFound(RifaErrors.NaoEncontrada.Code, RifaErrors.NaoEncontrada.Description)
+            ? RifaErrors.NaoEncontrada.ToResult<GetRifaByIdResponse>()
             : Result<GetRifaByIdResponse>.Success(new GetRifaByIdResponse(rifa.Nome, rifa.ValorBilhete, rifa.Bilhetes.Count, rifa.DataSorteio));
     }
 }
