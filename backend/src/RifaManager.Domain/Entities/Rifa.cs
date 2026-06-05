@@ -48,8 +48,20 @@ public sealed class Rifa : Entity
         if (string.IsNullOrEmpty(Nome))
             throw new DomainException(RifaErrors.NomeObrigatorio);
 
+        if (Nome.Length < 4)
+            throw new DomainException(RifaErrors.NomeMuitoCurto);
+
+        if (Nome.Length > 100)
+            throw new DomainException(RifaErrors.NomeMuitoLongo);
+
         if (string.IsNullOrEmpty(Descricao))
             throw new DomainException(RifaErrors.DescricaoObrigatoria);
+
+        if (Descricao.Length < 5)
+            throw new DomainException(RifaErrors.DescricaoMuitoCurta);
+
+        if (Descricao.Length > 500)
+            throw new DomainException(RifaErrors.DescricaoMuitoLonga);
 
         if (ValorBilhete <= 0)
             throw new DomainException(RifaErrors.ValorBilheteInvalido);
@@ -62,6 +74,12 @@ public sealed class Rifa : Entity
 
         if (string.IsNullOrEmpty(Premio))
             throw new DomainException(RifaErrors.PremioObrigatorio);
+
+        if (Premio.Length < 5)
+            throw new DomainException(RifaErrors.PremioMuitoCurto);
+
+        if (Premio.Length > 500)
+            throw new DomainException(RifaErrors.PremioMuitoLongo);
     }
 
     private void ValidarAlteracaoDeBilhete(Bilhete bilhete)
