@@ -1,4 +1,5 @@
 using RifaManager.Api;
+using RifaManager.Api.Middlewares;
 using RifaManager.Application;
 using RifaManager.Infrastructure;
 using Scalar.AspNetCore;
@@ -27,6 +28,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
     });
 }
 
+app.UseExceptionHandler();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
