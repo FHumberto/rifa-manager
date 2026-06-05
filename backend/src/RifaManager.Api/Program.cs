@@ -1,12 +1,12 @@
 using RifaManager.Api;
-using RifaManager.Api.Middlewares;
+using RifaManager.Api.Extensions;
 using RifaManager.Application;
 using RifaManager.Infrastructure;
 using Scalar.AspNetCore;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddApi();
+builder.Services.AddApi(builder.Configuration, builder.Environment);
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
@@ -30,6 +30,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 
 app.UseExceptionHandler();
 app.UseHttpsRedirection();
+app.UseCorsPolicy();
 app.UseAuthorization();
 app.MapControllers();
 
