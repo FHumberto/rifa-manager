@@ -1,11 +1,12 @@
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 
 namespace RifaManager.Api.Controllers;
 
-[ApiController]
+[ApiVersionNeutral]
 [Route("/")]
 [Tags("A P I")]
-public sealed class DefaultController : BaseController
+public class DefaultController : BaseController
 {
     [HttpGet]
     [EndpointSummary("Checagem")]
