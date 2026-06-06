@@ -1,6 +1,8 @@
 using System.Net.Mime;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using RifaManager.Application.Exceptions;
+using RifaManager.Domain.Abstractions;
 
 namespace RifaManager.Api.Middlewares;
 
@@ -14,6 +16,38 @@ public sealed class ExceptionMiddleware(ILogger<ExceptionMiddleware> logger) : I
 
         switch (exception)
         {
+
+            case NotFoundException notFoundException:
+                problem.Type = "https://datatracker.ietf.org/doc/html/rfc9110#name-404-not-found";
+                problem.Status = StatusCodes.Status404NotFound;
+                problem.Title = "Recurso não encontrado.";
+                SetDetailIfExists(problem, notFoundException.Message);
+                break;
+
+            case BadRequestException badRequestException:
+                problem.Type = "https://datatracker.ietf.org/doc/html/rfc9110#name-400-bad-request";
+                problem.Status = StatusCodes.Status400BadRequest;
+                problem.Title = "Requisição inválida.";
+                if (badRequestException.ValidationErrors is null)
+                    SetDetailIfExists(problem, badRequestException.Message);
+
+                SetValidationErrorsIfExists(problem, badRequestException.ValidationErrors);
+                break;
+
+            case UnauthorizedException unauthorizedException:
+                problem.Type = "https://datatracker.ietf.org/doc/html/rfc9110#name-401-unauthorized";
+                problem.Status = StatusCodes.Status401Unauthorized;
+                problem.Title = "Nao autorizado.";
+                SetDetailIfExists(problem, unauthorizedException.Message);
+                break;
+
+            case DomainException domainException:
+                problem.Type = "https://datatracker.ietf.org/doc/html/rfc9110#name-400-bad-request";
+                problem.Status = StatusCodes.Status400BadRequest;
+                problem.Title = "Requisição inválida.";
+                SetDetailIfExists(problem, domainException.Error.Description);
+                break;
+
             case NotImplementedException:
                 problem.Type = "https://datatracker.ietf.org/doc/html/rfc9110#name-501-not-implemented";
                 problem.Status = StatusCodes.Status501NotImplemented;
@@ -38,6 +72,24 @@ public sealed class ExceptionMiddleware(ILogger<ExceptionMiddleware> logger) : I
     #endregion
 
     #region [ METODOS AUXILIARES ]
+
+    //? A RFC espera que o campo 'detail' seja uma string descritiva do erro.
+    private static void SetDetailIfExists(ProblemDetails problem, string? message)
+    {
+        if (!string.IsNullOrWhiteSpace(message))
+        {
+            problem.Detail = message;
+        }
+    }
+
+    //? O dicionário entra como extensão.
+    private static void SetValidationErrorsIfExists(ProblemDetails problem, IReadOnlyDictionary<string, string[]>? validationErrors)
+    {
+        if (validationErrors?.Count > 0)
+        {
+            problem.Extensions["errors"] = validationErrors;
+        }
+    }
 
     private void LogUnhandledException(HttpContext context, Exception exception)
     {

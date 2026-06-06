@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RifaManager.Domain.Entities;
 using RifaManager.Infrastructure.Seeds;
@@ -24,6 +24,10 @@ public sealed class UsuarioMap : IEntityTypeConfiguration<Usuario>
         builder.Property(Usuario => Usuario.Email)
             .IsRequired()
             .HasMaxLength(100);
+
+        builder.Property(Usuario => Usuario.Senha)
+            .IsRequired()
+            .HasMaxLength(200);
 
         builder.Property(Usuario => Usuario.Perfil)
             .IsRequired();

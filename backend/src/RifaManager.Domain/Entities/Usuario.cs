@@ -1,7 +1,7 @@
-﻿using RifaManager.Domain.Abstractions;
+using RifaManager.Domain.Abstractions;
 using RifaManager.Domain.Enums;
 using RifaManager.Domain.Errors;
-using RifaManager.Domain.Policies;
+using RifaManager.Domain.Security.Policies;
 
 namespace RifaManager.Domain.Entities;
 
@@ -11,6 +11,7 @@ public sealed class Usuario : Entity
 
     public string Nome { get; private set; }
     public string Email { get; private set; }
+    public string Senha { get; private set; }
     public PerfilUsuario Perfil { get; private set; }
     public bool Ativo { get; private set; }
 
@@ -24,12 +25,14 @@ public sealed class Usuario : Entity
     {
         Nome = string.Empty;
         Email = string.Empty;
+        Senha = string.Empty;
     }
 
-    public Usuario(string nome, string email, PerfilUsuario perfil, bool ativo)
+    public Usuario(string nome, string email, string senha, PerfilUsuario perfil, bool ativo)
     {
         Nome = nome;
         Email = email;
+        Senha = senha;
         Perfil = perfil;
         Ativo = ativo;
 
@@ -45,8 +48,20 @@ public sealed class Usuario : Entity
         if (string.IsNullOrWhiteSpace(Nome))
             throw new DomainException(UsuarioErrors.NomeObrigatorio);
 
+        if (Nome.Length > 100)
+            throw new DomainException(UsuarioErrors.NomeMuitoLongo);
+
         if (string.IsNullOrWhiteSpace(Email))
             throw new DomainException(UsuarioErrors.EmailObrigatorio);
+
+        if (Email.Length > 100)
+            throw new DomainException(UsuarioErrors.EmailMuitoLongo);
+
+        if (string.IsNullOrWhiteSpace(Senha))
+            throw new DomainException(UsuarioErrors.SenhaObrigatoria);
+
+        if (Senha.Length > 200)
+            throw new DomainException(UsuarioErrors.SenhaMuitoLonga);
 
         if (!Enum.IsDefined(Perfil))
             throw new DomainException(UsuarioErrors.PerfilInvalido);

@@ -1,7 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using RifaManager.Domain.Persistence;
+using RifaManager.Domain.Security.Cryptography;
+using RifaManager.Domain.Security.Tokens;
 using RifaManager.Infrastructure.Context;
+using RifaManager.Infrastructure.Persistence;
+using RifaManager.Infrastructure.Security.Cryptography;
+using RifaManager.Infrastructure.Security.Tokens;
 
 namespace RifaManager.Infrastructure;
 
@@ -12,6 +18,21 @@ public static class DependencyInjection
         services.AddDbContext<RifaDbContext>(options =>
             options.UseSqlite(configuration.GetConnectionString("DefaultConnection")));
 
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddRepositories();
+        services.AddSecurity();
+
         return services;
+    }
+
+    private static void AddRepositories(this IServiceCollection services)
+    {
+        services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+    }
+
+    private static void AddSecurity(this IServiceCollection services)
+    {
+        services.AddScoped<IPasswordEncripter, PasswordEncripter>();
+        services.AddScoped<IAccessTokenGenerator, JwtAccessTokenGenerator>();
     }
 }

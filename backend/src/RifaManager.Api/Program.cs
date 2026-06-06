@@ -15,6 +15,7 @@ app.UseScalarDocs();
 app.UseExceptionHandler();
 app.UseHttpsRedirection();
 app.UseCorsPolicy();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 

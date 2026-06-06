@@ -152,6 +152,11 @@ namespace RifaManager.Infrastructure.Migrations
                     b.Property<int>("Perfil")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Senha")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
@@ -166,7 +171,8 @@ namespace RifaManager.Infrastructure.Migrations
                             Ativo = true,
                             Email = "admin@rifamanager.local",
                             Nome = "Administrador",
-                            Perfil = 2
+                            Perfil = 2,
+                            Senha = "AQAAAAIAAYagAAAAEDOSuz2SoafpO/IZGEl9L9YYNI5ojnfT6KKEOmRTr8EYiJ/fOQvuCnJ8ilXHJy4sLw=="
                         },
                         new
                         {
@@ -174,7 +180,8 @@ namespace RifaManager.Infrastructure.Migrations
                             Ativo = true,
                             Email = "usuario@rifamanager.local",
                             Nome = "Usuario Comum",
-                            Perfil = 1
+                            Perfil = 1,
+                            Senha = "AQAAAAIAAYagAAAAEEy7ZCvRrfkE6u4+/ro1PagYUSkzb9aMHckterhHYCI2uThrCeoQrQLbCTtRK4Q8Zg=="
                         });
                 });
 
