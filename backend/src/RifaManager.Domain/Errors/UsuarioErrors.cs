@@ -30,4 +30,7 @@ public static class UsuarioErrors
 
     public static readonly Error SemPermissaoParaGerenciarUsuarios =
         Error.AccessForbidden("Usuario.SemPermissaoParaGerenciarUsuarios", "Somente administradores ativos podem gerenciar usuários.");
+
+    public static readonly Error UsuarioSenhaInvalida =
+        Error.Validation("Usuario.UsuarioSenhaInvalida", "Email ou senha inválidos.");
 }

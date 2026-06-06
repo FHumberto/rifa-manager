@@ -172,7 +172,7 @@ namespace RifaManager.Infrastructure.Migrations
                             Email = "admin@rifamanager.local",
                             Nome = "Administrador",
                             Perfil = 2,
-                            Senha = "pbkdf2_sha256$100000$cmlmYS1tYW5hZ2VyLWFkbWluLXNhbHQ=$Jwh4dZlB22rYR5uoofn97Y7FJwdnwOdI8KF8NzjssEM="
+                            Senha = "AQAAAAIAAYagAAAAEDOSuz2SoafpO/IZGEl9L9YYNI5ojnfT6KKEOmRTr8EYiJ/fOQvuCnJ8ilXHJy4sLw=="
                         },
                         new
                         {
@@ -181,7 +181,7 @@ namespace RifaManager.Infrastructure.Migrations
                             Email = "usuario@rifamanager.local",
                             Nome = "Usuario Comum",
                             Perfil = 1,
-                            Senha = "pbkdf2_sha256$100000$cmlmYS1tYW5hZ2VyLXVzZXItc2FsdA==$+cik2bvSeHUEaI/Mp22vmzb9ZZ+KwN/p/F63xTDcWVg="
+                            Senha = "AQAAAAIAAYagAAAAEEy7ZCvRrfkE6u4+/ro1PagYUSkzb9aMHckterhHYCI2uThrCeoQrQLbCTtRK4Q8Zg=="
                         });
                 });
 

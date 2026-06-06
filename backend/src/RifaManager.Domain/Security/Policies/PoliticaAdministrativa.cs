@@ -1,9 +1,9 @@
-﻿using RifaManager.Domain.Abstractions;
+using RifaManager.Domain.Abstractions;
 using RifaManager.Domain.Entities;
 using RifaManager.Domain.Enums;
 using RifaManager.Domain.Errors;
 
-namespace RifaManager.Domain.Policies;
+namespace RifaManager.Domain.Security.Policies;
 
 public static class PoliticaAdministrativa
 {

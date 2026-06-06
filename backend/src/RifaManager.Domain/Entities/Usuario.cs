@@ -1,7 +1,7 @@
 using RifaManager.Domain.Abstractions;
 using RifaManager.Domain.Enums;
 using RifaManager.Domain.Errors;
-using RifaManager.Domain.Policies;
+using RifaManager.Domain.Security.Policies;
 
 namespace RifaManager.Domain.Entities;
 
