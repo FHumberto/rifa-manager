@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RifaManager.Infrastructure.Context;
 
@@ -10,9 +11,11 @@ using RifaManager.Infrastructure.Context;
 namespace RifaManager.Infrastructure.Migrations
 {
     [DbContext(typeof(RifaDbContext))]
-    partial class RifaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260606105445_AddUsuarioSenha")]
+    partial class AddUsuarioSenha
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.8");

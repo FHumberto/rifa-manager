@@ -15,6 +15,7 @@ public static class UsuarioSeed
             Nome = "Administrador",
             Email = "admin@rifamanager.local",
             Perfil = PerfilUsuario.Administrador,
+            Senha = "pbkdf2_sha256$100000$cmlmYS1tYW5hZ2VyLWFkbWluLXNhbHQ=$Jwh4dZlB22rYR5uoofn97Y7FJwdnwOdI8KF8NzjssEM=",
             Ativo = true
         },
         new
@@ -23,6 +24,7 @@ public static class UsuarioSeed
             Nome = "Usuario Comum",
             Email = "usuario@rifamanager.local",
             Perfil = PerfilUsuario.Comum,
+            Senha = "pbkdf2_sha256$100000$cmlmYS1tYW5hZ2VyLXVzZXItc2FsdA==$+cik2bvSeHUEaI/Mp22vmzb9ZZ+KwN/p/F63xTDcWVg=",
             Ativo = true
         }
     ];

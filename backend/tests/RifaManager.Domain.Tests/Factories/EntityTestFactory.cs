@@ -15,8 +15,8 @@ internal static class EntityTestFactory
         => new("Joao", "84999999999", null);
 
     public static Usuario CriarAdministrador()
-        => new("Admin", "admin@rifa.com", PerfilUsuario.Administrador, true);
+        => new("Admin", "admin@rifa.com", "senha-hash", PerfilUsuario.Administrador, true);
 
     public static Usuario CriarUsuarioComum(bool ativo = true)
-        => new("Usuario", "usuario@rifa.com", PerfilUsuario.Comum, ativo);
+        => new("Usuario", "usuario@rifa.com", "senha-hash", PerfilUsuario.Comum, ativo);
 }
