@@ -1,7 +1,6 @@
 using FluentValidation;
 using FluentValidation.Results;
 using RifaManager.Application.Exceptions;
-using RifaManager.Application.UseCases.EditarUsuario;
 using RifaManager.Domain.Entities;
 using RifaManager.Domain.Errors;
 using RifaManager.Domain.Persistence;

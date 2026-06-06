@@ -1,0 +1,55 @@
+@baseUrl = https://localhost:7224
+
+### Login administrador
+# @name loginAdmin
+POST {{baseUrl}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@rifamanager.local",
+  "senha": "admin123"
+}
+
+### Cadastrar rifa
+POST {{baseUrl}}/api/v1/rifas
+Content-Type: application/json
+Authorization: Bearer {{loginAdmin.response.body.accessToken}}
+
+{
+  "nome": "Rifa Beneficente",
+  "descricao": "Rifa para arrecadacao beneficente",
+  "valorBilhete": 10.00,
+  "dataSorteio": "2026-12-31",
+  "premio": "Cesta de premios"
+}
+
+@rifaId = 00000000-0000-0000-0000-000000000000
+
+### Listar rifas
+GET {{baseUrl}}/api/v1/rifas
+Authorization: Bearer {{loginAdmin.response.body.accessToken}}
+
+### Consultar rifa por id
+GET {{baseUrl}}/api/v1/rifas/{{rifaId}}
+Authorization: Bearer {{loginAdmin.response.body.accessToken}}
+
+### Editar rifa
+PUT {{baseUrl}}/api/v1/rifas/{{rifaId}}
+Content-Type: application/json
+Authorization: Bearer {{loginAdmin.response.body.accessToken}}
+
+{
+  "nome": "Rifa Beneficente Editada",
+  "descricao": "Rifa atualizada para arrecadacao beneficente",
+  "valorBilhete": 15.00,
+  "dataSorteio": "2026-12-31",
+  "premio": "Premio atualizado"
+}
+
+### Encerrar rifa
+PATCH {{baseUrl}}/api/v1/rifas/{{rifaId}}/encerrar
+Authorization: Bearer {{loginAdmin.response.body.accessToken}}
+
+### Sortear rifa
+POST {{baseUrl}}/api/v1/rifas/{{rifaId}}/sortear
+Authorization: Bearer {{loginAdmin.response.body.accessToken}}

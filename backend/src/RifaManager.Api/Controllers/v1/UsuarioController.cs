@@ -1,10 +1,10 @@
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RifaManager.Application.UseCases.AtivarUsuario;
-using RifaManager.Application.UseCases.DesativarUsuario;
-using RifaManager.Application.UseCases.EditarUsuario;
+using RifaManager.Application.UseCases.Usuarios.AtivarUsuario;
 using RifaManager.Application.UseCases.Usuarios.CadastrarUsuario;
+using RifaManager.Application.UseCases.Usuarios.DesativarUsuario;
+using RifaManager.Application.UseCases.Usuarios.EditarUsuario;
 using RifaManager.Application.UseCases.Usuarios.GetById;
 using RifaManager.Domain.Enums;
 
