@@ -33,4 +33,7 @@ public static class UsuarioErrors
 
     public static readonly Error UsuarioSenhaInvalida =
         Error.Validation("Usuario.UsuarioSenhaInvalida", "Email ou senha inválidos.");
+
+    public static readonly Error UsuarioNaoEncontrado =
+        Error.NotFound("Usuario.UsuarioNaoEncontrado", "Usuário não encontrado.");
 }

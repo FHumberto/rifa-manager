@@ -6,7 +6,7 @@ using RifaManager.Application.UseCases.Login;
 namespace RifaManager.Api.Controllers.v1;
 
 [ApiVersion(1)]
-public class AuthController : BaseController
+public sealed class AuthController : BaseController
 {
     [AllowAnonymous]
     [HttpPost("login")]

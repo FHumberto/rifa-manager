@@ -28,6 +28,9 @@ public sealed class ExceptionMiddleware(ILogger<ExceptionMiddleware> logger) : I
                 problem.Type = "https://datatracker.ietf.org/doc/html/rfc9110#name-400-bad-request";
                 problem.Status = StatusCodes.Status400BadRequest;
                 problem.Title = "Requisição inválida.";
+                if (badRequestException.ValidationErrors is null)
+                    SetDetailIfExists(problem, badRequestException.Message);
+
                 SetValidationErrorsIfExists(problem, badRequestException.ValidationErrors);
                 break;
 
