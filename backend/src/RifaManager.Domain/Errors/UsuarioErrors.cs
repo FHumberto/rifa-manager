@@ -36,4 +36,7 @@ public static class UsuarioErrors
 
     public static readonly Error UsuarioNaoEncontrado =
         Error.NotFound("Usuario.UsuarioNaoEncontrado", "Usuário não encontrado.");
+
+    public static readonly Error EmailJaCadastrado =
+        Error.Validation("Usuario.EmailJaCadastrado", "E-mail já cadastrado.");
 }

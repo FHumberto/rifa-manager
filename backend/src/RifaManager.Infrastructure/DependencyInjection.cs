@@ -18,10 +18,21 @@ public static class DependencyInjection
         services.AddDbContext<RifaDbContext>(options =>
             options.UseSqlite(configuration.GetConnectionString("DefaultConnection")));
 
-        services.AddScoped<IUsuarioRepository, UsuarioRepository>();
-        services.AddScoped<IPasswordEncripter, PasswordEncripter>();
-        services.AddScoped<IAccessTokenGenerator, JwtAccessTokenGenerator>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddRepositories();
+        services.AddSecurity();
 
         return services;
+    }
+
+    private static void AddRepositories(this IServiceCollection services)
+    {
+        services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+    }
+
+    private static void AddSecurity(this IServiceCollection services)
+    {
+        services.AddScoped<IPasswordEncripter, PasswordEncripter>();
+        services.AddScoped<IAccessTokenGenerator, JwtAccessTokenGenerator>();
     }
 }

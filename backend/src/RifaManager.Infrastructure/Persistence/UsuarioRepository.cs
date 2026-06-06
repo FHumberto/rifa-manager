@@ -19,4 +19,15 @@ internal sealed class UsuarioRepository(RifaDbContext context) : IUsuarioReposit
             .AsNoTracking()
             .FirstOrDefaultAsync(usuario => usuario.Email == email);
     }
+
+    public async Task AddAsync(Usuario usuario)
+    {
+        await context.Usuarios.AddAsync(usuario);
+    }
+
+    public Task UpdateAsync(Usuario usuario)
+    {
+        context.Usuarios.Update(usuario);
+        return Task.CompletedTask;
+    }
 }
