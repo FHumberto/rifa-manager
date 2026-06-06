@@ -1,0 +1,51 @@
+@baseUrl = https://localhost:7224
+
+### Login administrador
+# @name loginAdmin
+POST {{baseUrl}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@rifamanager.local",
+  "senha": "admin123"
+}
+
+@rifaId = 00000000-0000-0000-0000-000000000000
+
+### Cadastrar participante
+# @name cadastrarParticipante
+POST {{baseUrl}}/api/v1/participantes
+Content-Type: application/json
+Authorization: Bearer {{loginAdmin.response.body.accessToken}}
+
+{
+  "rifaId": "{{rifaId}}",
+  "nome": "Joao da Silva",
+  "telefone": "11999999999",
+  "observacao": "Contato pelo WhatsApp"
+}
+
+@participanteId = 00000000-0000-0000-0000-000000000000
+
+### Editar participante
+PUT {{baseUrl}}/api/v1/participantes/{{participanteId}}
+Content-Type: application/json
+Authorization: Bearer {{loginAdmin.response.body.accessToken}}
+
+{
+  "nome": "Joao Silva",
+  "telefone": "11988888888",
+  "observacao": "Atualizado"
+}
+
+### Consultar participante por id
+GET {{baseUrl}}/api/v1/participantes/{{participanteId}}
+Authorization: Bearer {{loginAdmin.response.body.accessToken}}
+
+### Listar participantes da rifa
+GET {{baseUrl}}/api/v1/participantes/rifa/{{rifaId}}
+Authorization: Bearer {{loginAdmin.response.body.accessToken}}
+
+### Pesquisar participantes
+GET {{baseUrl}}/api/v1/participantes/pesquisar?nome=Joao&telefone=119&numeroBilhete=1&statusPagamento=2
+Authorization: Bearer {{loginAdmin.response.body.accessToken}}

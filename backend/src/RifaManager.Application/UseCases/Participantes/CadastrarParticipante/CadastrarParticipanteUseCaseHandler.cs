@@ -1,0 +1,57 @@
+using FluentValidation;
+using FluentValidation.Results;
+using RifaManager.Application.Exceptions;
+using RifaManager.Domain.Entities;
+using RifaManager.Domain.Errors;
+using RifaManager.Domain.Persistence;
+
+namespace RifaManager.Application.UseCases.Participantes.CadastrarParticipante;
+
+public sealed class CadastrarParticipanteUseCaseHandler : ICadastrarParticipanteUseCase
+{
+    #region [ DEPENDÊNCIAS ]
+
+    private readonly IValidator<CadastrarParticipanteRequest> _validator;
+    private readonly IRifaRepository _rifaRepository;
+    private readonly IParticipanteRepository _participanteRepository;
+    private readonly IUnitOfWork _unitOfWork;
+
+    public CadastrarParticipanteUseCaseHandler(IValidator<CadastrarParticipanteRequest> validator, IRifaRepository rifaRepository, IParticipanteRepository participanteRepository, IUnitOfWork unitOfWork)
+    {
+        _validator = validator;
+        _rifaRepository = rifaRepository;
+        _participanteRepository = participanteRepository;
+        _unitOfWork = unitOfWork;
+    }
+
+    #endregion
+
+    public async Task<CadastrarParticipanteResponse> Execute(CadastrarParticipanteRequest request)
+    {
+        await ValidarRequisicao(request);
+        await ValidarRifa(request);
+
+        Participante participante = new(request.Nome, request.Telefone, request.Observacao);
+
+        await _participanteRepository.AddAsync(participante);
+        await _unitOfWork.CommitAsync();
+
+        return new CadastrarParticipanteResponse(participante.Id);
+    }
+
+    private async Task ValidarRifa(CadastrarParticipanteRequest request)
+    {
+        Rifa rifa = await _rifaRepository.GetByIdAsync(request.RifaId)
+            ?? throw new NotFoundException(RifaErrors.RifaNaoEncontrada.Description);
+
+        rifa.ValidarCompraDeBilhetes();
+    }
+
+    private async Task ValidarRequisicao(CadastrarParticipanteRequest request)
+    {
+        ValidationResult validationResult = await _validator.ValidateAsync(request);
+
+        if (!validationResult.IsValid)
+            throw new BadRequestException(validationResult);
+    }
+}
