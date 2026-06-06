@@ -1,0 +1,60 @@
+@baseUrl = https://localhost:7224
+
+### Login administrador
+# @name loginAdmin
+POST {{baseUrl}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@rifamanager.local",
+  "senha": "admin123"
+}
+
+@rifaId = 00000000-0000-0000-0000-000000000000
+@participanteId = 00000000-0000-0000-0000-000000000000
+
+### Registrar compra de bilhetes
+POST {{baseUrl}}/api/v1/bilhetes/compras
+Content-Type: application/json
+Authorization: Bearer {{loginAdmin.response.body.accessToken}}
+
+{
+  "rifaId": "{{rifaId}}",
+  "participanteId": "{{participanteId}}",
+  "quantidade": 3
+}
+
+@bilheteId = 00000000-0000-0000-0000-000000000000
+
+### Consultar bilhete por id
+GET {{baseUrl}}/api/v1/bilhetes/{{bilheteId}}
+Authorization: Bearer {{loginAdmin.response.body.accessToken}}
+
+### Listar bilhetes da rifa
+GET {{baseUrl}}/api/v1/bilhetes/rifa/{{rifaId}}
+Authorization: Bearer {{loginAdmin.response.body.accessToken}}
+
+### Listar bilhetes pendentes
+GET {{baseUrl}}/api/v1/bilhetes/status/1?rifaId={{rifaId}}
+Authorization: Bearer {{loginAdmin.response.body.accessToken}}
+
+### Listar bilhetes pagos
+GET {{baseUrl}}/api/v1/bilhetes/status/2?rifaId={{rifaId}}
+Authorization: Bearer {{loginAdmin.response.body.accessToken}}
+
+### Listar bilhetes cancelados
+GET {{baseUrl}}/api/v1/bilhetes/status/3?rifaId={{rifaId}}
+Authorization: Bearer {{loginAdmin.response.body.accessToken}}
+
+### Alterar status do bilhete para pago
+PATCH {{baseUrl}}/api/v1/bilhetes/{{bilheteId}}/status
+Content-Type: application/json
+Authorization: Bearer {{loginAdmin.response.body.accessToken}}
+
+{
+  "status": 2
+}
+
+### Cancelar bilhete
+PATCH {{baseUrl}}/api/v1/bilhetes/{{bilheteId}}/cancelar
+Authorization: Bearer {{loginAdmin.response.body.accessToken}}

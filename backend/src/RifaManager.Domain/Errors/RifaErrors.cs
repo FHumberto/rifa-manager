@@ -36,4 +36,7 @@ public static class RifaErrors
 
     public static readonly Error RifaNaoEncontrada =
         Error.NotFound("Rifa.NaoEncontrada", "Rifa nao encontrada.");
+
+    public static readonly Error CompraEmRifaEncerrada =
+        Error.Conflict("Rifa.CompraEmRifaEncerrada", "Nao e possivel registrar compra em uma rifa encerrada.");
 }

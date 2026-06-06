@@ -20,6 +20,13 @@ internal sealed class RifaRepository(RifaDbContext context) : IRifaRepository
             .FirstOrDefaultAsync(rifa => rifa.Id == id);
     }
 
+    public Task<Rifa?> GetByBilheteIdWithBilhetesAsync(Guid bilheteId)
+    {
+        return context.Rifas
+            .Include(rifa => rifa.Bilhetes)
+            .FirstOrDefaultAsync(rifa => rifa.Bilhetes.Any(bilhete => bilhete.Id == bilheteId));
+    }
+
     public async Task<IReadOnlyList<Rifa>> GetAllAsync()
     {
         return await context.Rifas
