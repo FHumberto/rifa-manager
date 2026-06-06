@@ -1,4 +1,4 @@
-namespace RifaManager.Application.UseCases.AtivarUsuario;
+namespace RifaManager.Application.UseCases.Usuarios.AtivarUsuario;
 
 public interface IAtivarUsuarioUseCase
 {

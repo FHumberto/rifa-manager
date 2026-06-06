@@ -1,5 +1,4 @@
 using RifaManager.Application.Exceptions;
-using RifaManager.Application.UseCases.DesativarUsuario;
 using RifaManager.Domain.Entities;
 using RifaManager.Domain.Errors;
 using RifaManager.Domain.Persistence;

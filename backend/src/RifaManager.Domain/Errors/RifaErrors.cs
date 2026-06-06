@@ -30,4 +30,10 @@ public static class RifaErrors
 
     public static readonly Error BilheteNaoPertenceARifa =
         Error.Validation("Rifa.BilheteNaoPertenceARifa", "O bilhete informado não pertence a esta rifa.");
+
+    public static readonly Error SemBilhetesPagosParaSorteio =
+        Error.Validation("Rifa.SemBilhetesPagosParaSorteio", "A rifa nao possui bilhetes pagos para sorteio.");
+
+    public static readonly Error RifaNaoEncontrada =
+        Error.NotFound("Rifa.NaoEncontrada", "Rifa nao encontrada.");
 }

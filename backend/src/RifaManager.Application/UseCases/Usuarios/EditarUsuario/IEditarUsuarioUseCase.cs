@@ -1,4 +1,4 @@
-namespace RifaManager.Application.UseCases.EditarUsuario;
+namespace RifaManager.Application.UseCases.Usuarios.EditarUsuario;
 
 public interface IEditarUsuarioUseCase
 {

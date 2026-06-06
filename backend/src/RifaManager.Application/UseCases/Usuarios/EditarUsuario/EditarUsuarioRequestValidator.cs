@@ -1,7 +1,7 @@
 using FluentValidation;
 using RifaManager.Domain.Errors;
 
-namespace RifaManager.Application.UseCases.EditarUsuario;
+namespace RifaManager.Application.UseCases.Usuarios.EditarUsuario;
 
 public sealed class EditarUsuarioRequestValidator : AbstractValidator<EditarUsuarioRequest>
 {

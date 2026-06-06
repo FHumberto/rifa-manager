@@ -1,4 +1,4 @@
-namespace RifaManager.Application.UseCases.DesativarUsuario;
+namespace RifaManager.Application.UseCases.Usuarios.DesativarUsuario;
 
 public interface IDesativarUsuarioUseCase
 {
