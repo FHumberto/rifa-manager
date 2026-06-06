@@ -96,6 +96,12 @@ public sealed class Rifa : Entity
         Encerrada = true;
     }
 
+    public void ValidarCompraDeBilhetes()
+    {
+        if (Encerrada)
+            throw new DomainException(RifaErrors.CompraEmRifaEncerrada);
+    }
+
     public void MarcarBilheteComoPago(Bilhete bilhete)
     {
         ValidarAlteracaoDeBilhete(bilhete);

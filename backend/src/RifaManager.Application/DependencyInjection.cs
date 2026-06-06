@@ -1,5 +1,11 @@
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using RifaManager.Application.UseCases.Bilhetes.AlterarStatusBilhete;
+using RifaManager.Application.UseCases.Bilhetes.CancelarBilhete;
+using RifaManager.Application.UseCases.Bilhetes.GetById;
+using RifaManager.Application.UseCases.Bilhetes.ListarPorRifa;
+using RifaManager.Application.UseCases.Bilhetes.ListarPorStatus;
+using RifaManager.Application.UseCases.Bilhetes.RegistrarCompraBilhetes;
 using RifaManager.Application.UseCases.Login;
 using RifaManager.Application.UseCases.Rifas.CadastrarRifa;
 using RifaManager.Application.UseCases.Rifas.EditarRifa;
@@ -28,6 +34,12 @@ public static class DependencyInjection
     private static void AddUseCases(this IServiceCollection services)
     {
         services.AddScoped<ILoginUseCase, LoginUseCaseHandler>();
+        services.AddScoped<IAlterarStatusBilheteUseCase, AlterarStatusBilheteUseCaseHandler>();
+        services.AddScoped<ICancelarBilheteUseCase, CancelarBilheteUseCaseHandler>();
+        services.AddScoped<IGetBilheteByIdUseCase, GetBilheteByIdHandler>();
+        services.AddScoped<IListarBilhetesPorRifaUseCase, ListarBilhetesPorRifaHandler>();
+        services.AddScoped<IListarBilhetesPorStatusUseCase, ListarBilhetesPorStatusHandler>();
+        services.AddScoped<IRegistrarCompraBilhetesUseCase, RegistrarCompraBilhetesUseCaseHandler>();
         services.AddScoped<IGetUsuarioByIdUseCase, GetUsuarioByIdHandler>();
         services.AddScoped<ICadastrarRifaUseCase, CadastrarRifaUseCaseHandler>();
         services.AddScoped<IEditarRifaUseCase, EditarRifaUseCaseHandler>();

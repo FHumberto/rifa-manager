@@ -24,4 +24,7 @@ public static class BilheteErrors
 
     public static readonly Error PagoNaoPodeSerCancelado =
         Error.Conflict("Bilhete.PagoNaoPodeSerCancelado", "Não é possível marcar um bilhete pago como cancelado.");
+
+    public static readonly Error BilheteNaoEncontrado =
+        Error.NotFound("Bilhete.BilheteNaoEncontrado", "O bilhete não foi encontrado.");
 }

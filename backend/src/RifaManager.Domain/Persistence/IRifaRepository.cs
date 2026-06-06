@@ -8,6 +8,8 @@ public interface IRifaRepository
 
     Task<Rifa?> GetByIdWithBilhetesAsync(Guid id);
 
+    Task<Rifa?> GetByBilheteIdWithBilhetesAsync(Guid bilheteId);
+
     Task<IReadOnlyList<Rifa>> GetAllAsync();
 
     Task AddAsync(Rifa rifa);
