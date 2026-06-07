@@ -2,6 +2,7 @@ using RifaManager.Application.Exceptions;
 using RifaManager.Domain.Entities;
 using RifaManager.Domain.Errors;
 using RifaManager.Domain.Persistence;
+using RifaManager.Domain.Persistence.Repositories;
 
 namespace RifaManager.Application.UseCases.Usuarios.AtivarUsuario;
 

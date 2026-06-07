@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RifaManager.Domain.Entities;
 
-namespace RifaManager.Infrastructure.Mappings;
+namespace RifaManager.Infrastructure.Persistence.Mappings;
 
 public sealed class BilheteMap : IEntityTypeConfiguration<Bilhete>
 {

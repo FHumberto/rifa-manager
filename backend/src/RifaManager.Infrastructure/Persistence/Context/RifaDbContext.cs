@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using RifaManager.Domain.Entities;
 
-namespace RifaManager.Infrastructure.Context;
+namespace RifaManager.Infrastructure.Persistence.Context;
 
 public sealed class RifaDbContext(DbContextOptions<RifaDbContext> options) : DbContext(options)
 {

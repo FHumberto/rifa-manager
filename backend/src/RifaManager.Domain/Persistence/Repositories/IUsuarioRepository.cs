@@ -1,6 +1,6 @@
 using RifaManager.Domain.Entities;
 
-namespace RifaManager.Domain.Persistence;
+namespace RifaManager.Domain.Persistence.Repositories;
 
 public interface IUsuarioRepository
 {

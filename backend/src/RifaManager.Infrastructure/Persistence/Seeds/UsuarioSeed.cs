@@ -1,6 +1,6 @@
 using RifaManager.Domain.Enums;
 
-namespace RifaManager.Infrastructure.Seeds;
+namespace RifaManager.Infrastructure.Persistence.Seeds;
 
 public static class UsuarioSeed
 {

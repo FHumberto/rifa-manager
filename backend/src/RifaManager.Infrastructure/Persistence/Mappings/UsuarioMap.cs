@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RifaManager.Domain.Entities;
-using RifaManager.Infrastructure.Seeds;
+using RifaManager.Infrastructure.Persistence.Seeds;
 
-namespace RifaManager.Infrastructure.Mappings;
+namespace RifaManager.Infrastructure.Persistence.Mappings;
 
 public sealed class UsuarioMap : IEntityTypeConfiguration<Usuario>
 {

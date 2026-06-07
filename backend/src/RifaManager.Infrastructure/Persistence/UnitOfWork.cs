@@ -1,5 +1,5 @@
 using RifaManager.Domain.Persistence;
-using RifaManager.Infrastructure.Context;
+using RifaManager.Infrastructure.Persistence.Context;
 
 namespace RifaManager.Infrastructure.Persistence;
 

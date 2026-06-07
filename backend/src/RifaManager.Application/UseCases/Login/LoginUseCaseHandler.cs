@@ -3,7 +3,7 @@ using FluentValidation.Results;
 using RifaManager.Application.Exceptions;
 using RifaManager.Domain.Entities;
 using RifaManager.Domain.Errors;
-using RifaManager.Domain.Persistence;
+using RifaManager.Domain.Persistence.Repositories;
 using RifaManager.Domain.Security.Cryptography;
 using RifaManager.Domain.Security.Tokens;
 

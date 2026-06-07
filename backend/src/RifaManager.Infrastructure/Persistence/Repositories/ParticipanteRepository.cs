@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using RifaManager.Domain.Entities;
 using RifaManager.Domain.Enums;
-using RifaManager.Domain.Persistence;
-using RifaManager.Infrastructure.Context;
+using RifaManager.Domain.Persistence.Repositories;
+using RifaManager.Infrastructure.Persistence.Context;
 
-namespace RifaManager.Infrastructure.Persistence;
+namespace RifaManager.Infrastructure.Persistence.Repositories;
 
 internal sealed class ParticipanteRepository(RifaDbContext context) : IParticipanteRepository
 {

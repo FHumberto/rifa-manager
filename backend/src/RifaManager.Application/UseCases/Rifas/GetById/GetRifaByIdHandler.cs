@@ -1,6 +1,6 @@
 using RifaManager.Application.Exceptions;
 using RifaManager.Domain.Entities;
-using RifaManager.Domain.Persistence;
+using RifaManager.Domain.Persistence.Repositories;
 
 namespace RifaManager.Application.UseCases.Rifas.GetById;
 

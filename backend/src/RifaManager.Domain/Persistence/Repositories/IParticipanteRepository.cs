@@ -1,7 +1,7 @@
 using RifaManager.Domain.Entities;
 using RifaManager.Domain.Enums;
 
-namespace RifaManager.Domain.Persistence;
+namespace RifaManager.Domain.Persistence.Repositories;
 
 public interface IParticipanteRepository
 {
