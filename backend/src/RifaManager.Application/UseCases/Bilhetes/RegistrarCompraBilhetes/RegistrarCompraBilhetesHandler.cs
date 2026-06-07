@@ -8,7 +8,7 @@ using RifaManager.Domain.Persistence.Repositories;
 
 namespace RifaManager.Application.UseCases.Bilhetes.RegistrarCompraBilhetes;
 
-public sealed class RegistrarCompraBilhetesUseCaseHandler : IRegistrarCompraBilhetesUseCase
+public sealed class RegistrarCompraBilhetesHandler : IRegistrarCompraBilhetesUseCase
 {
     #region [ DEPENDÊNCIAS ]
 
@@ -19,7 +19,7 @@ public sealed class RegistrarCompraBilhetesUseCaseHandler : IRegistrarCompraBilh
     private readonly IBilheteRepository _bilheteRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public RegistrarCompraBilhetesUseCaseHandler(
+    public RegistrarCompraBilhetesHandler(
         IValidator<RegistrarCompraBilhetesRequest> validator,
         IRifaRepository rifaRepository,
         IParticipanteRepository participanteRepository,

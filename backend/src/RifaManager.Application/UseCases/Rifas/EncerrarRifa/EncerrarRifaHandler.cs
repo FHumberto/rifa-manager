@@ -6,7 +6,7 @@ using RifaManager.Domain.Persistence.Repositories;
 
 namespace RifaManager.Application.UseCases.Rifas.EncerrarRifa;
 
-public sealed class EncerrarRifaUseCaseHandler(IRifaRepository rifaRepository, IUnitOfWork unitOfWork) : IEncerrarRifaUseCase
+public sealed class EncerrarRifaHandler(IRifaRepository rifaRepository, IUnitOfWork unitOfWork) : IEncerrarRifaUseCase
 {
     public async Task Execute(Guid id, CancellationToken cancellationToken)
     {

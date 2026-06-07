@@ -9,7 +9,7 @@ using RifaManager.Domain.Persistence.Repositories;
 
 namespace RifaManager.Application.UseCases.Bilhetes.AlterarStatusBilhete;
 
-public sealed class AlterarStatusBilheteUseCaseHandler : IAlterarStatusBilheteUseCase
+public sealed class AlterarStatusBilheteHandler : IAlterarStatusBilheteUseCase
 {
     #region [ DEPEDÊNCIAS ]
 
@@ -17,7 +17,7 @@ public sealed class AlterarStatusBilheteUseCaseHandler : IAlterarStatusBilheteUs
     private readonly IRifaRepository _rifaRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public AlterarStatusBilheteUseCaseHandler(IValidator<AlterarStatusBilheteRequest> validator, IRifaRepository rifaRepository, IUnitOfWork unitOfWork)
+    public AlterarStatusBilheteHandler(IValidator<AlterarStatusBilheteRequest> validator, IRifaRepository rifaRepository, IUnitOfWork unitOfWork)
     {
         _validator = validator;
         _rifaRepository = rifaRepository;

@@ -8,7 +8,7 @@ using RifaManager.Domain.Persistence.Repositories;
 
 namespace RifaManager.Application.UseCases.Participantes.CadastrarParticipante;
 
-public sealed class CadastrarParticipanteUseCaseHandler : ICadastrarParticipanteUseCase
+public sealed class CadastrarParticipanteHandler : ICadastrarParticipanteUseCase
 {
     #region [ DEPENDÊNCIAS ]
 
@@ -17,7 +17,7 @@ public sealed class CadastrarParticipanteUseCaseHandler : ICadastrarParticipante
     private readonly IParticipanteRepository _participanteRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public CadastrarParticipanteUseCaseHandler(IValidator<CadastrarParticipanteRequest> validator, IRifaRepository rifaRepository, IParticipanteRepository participanteRepository, IUnitOfWork unitOfWork)
+    public CadastrarParticipanteHandler(IValidator<CadastrarParticipanteRequest> validator, IRifaRepository rifaRepository, IParticipanteRepository participanteRepository, IUnitOfWork unitOfWork)
     {
         _validator = validator;
         _rifaRepository = rifaRepository;

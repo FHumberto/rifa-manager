@@ -6,7 +6,7 @@ using RifaManager.Domain.Persistence.Repositories;
 
 namespace RifaManager.Application.UseCases.Bilhetes.CancelarBilhete;
 
-public sealed class CancelarBilheteUseCaseHandler(IRifaRepository rifaRepository, IUnitOfWork unitOfWork) : ICancelarBilheteUseCase
+public sealed class CancelarBilheteHandler(IRifaRepository rifaRepository, IUnitOfWork unitOfWork) : ICancelarBilheteUseCase
 {
     public async Task Execute(Guid id, CancellationToken cancellationToken)
     {

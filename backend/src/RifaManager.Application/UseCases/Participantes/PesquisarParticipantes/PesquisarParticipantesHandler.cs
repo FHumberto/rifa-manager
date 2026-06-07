@@ -4,7 +4,7 @@ using RifaManager.Domain.Persistence.Repositories;
 
 namespace RifaManager.Application.UseCases.Participantes.PesquisarParticipantes;
 
-public sealed class PesquisarParticipantesUseCaseHandler(IParticipanteRepository participanteRepository) : IPesquisarParticipantesUseCase
+public sealed class PesquisarParticipantesHandler(IParticipanteRepository participanteRepository) : IPesquisarParticipantesUseCase
 {
     public async Task<IReadOnlyList<PesquisarParticipantesResponse>> Execute(PesquisarParticipantesRequest request, CancellationToken cancellationToken)
     {

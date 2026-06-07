@@ -8,7 +8,7 @@ using RifaManager.Domain.Persistence.Repositories;
 
 namespace RifaManager.Application.UseCases.Usuarios.EditarUsuario;
 
-public sealed class EditarUsuarioUseCaseHandler : IEditarUsuarioUseCase
+public sealed class EditarUsuarioHandler : IEditarUsuarioUseCase
 {
     #region [ DEPENDÊNCIAS ]
 
@@ -16,7 +16,7 @@ public sealed class EditarUsuarioUseCaseHandler : IEditarUsuarioUseCase
     private readonly IUsuarioRepository _usuarioRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public EditarUsuarioUseCaseHandler(IValidator<EditarUsuarioRequest> validator, IUsuarioRepository usuarioRepository, IUnitOfWork unitOfWork)
+    public EditarUsuarioHandler(IValidator<EditarUsuarioRequest> validator, IUsuarioRepository usuarioRepository, IUnitOfWork unitOfWork)
     {
         _validator = validator;
         _usuarioRepository = usuarioRepository;

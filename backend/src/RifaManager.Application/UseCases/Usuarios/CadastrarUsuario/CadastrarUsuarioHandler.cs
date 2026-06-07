@@ -8,7 +8,7 @@ using RifaManager.Domain.Security.Cryptography;
 
 namespace RifaManager.Application.UseCases.Usuarios.CadastrarUsuario;
 
-public sealed class CadastrarUsuarioUseCaseHandler : ICadastrarUsuarioUseCase
+public sealed class CadastrarUsuarioHandler : ICadastrarUsuarioUseCase
 {
     #region [ DEPENDENCIAS ]
 
@@ -17,7 +17,7 @@ public sealed class CadastrarUsuarioUseCaseHandler : ICadastrarUsuarioUseCase
     private readonly IUnitOfWork _unitOfWork;
     private readonly IPasswordEncripter _passwordEncripter;
 
-    public CadastrarUsuarioUseCaseHandler(IValidator<CadastrarUsuarioRequest> validator, IUsuarioRepository usuarioRepository, IUnitOfWork unitOfWork, IPasswordEncripter passwordEncripter)
+    public CadastrarUsuarioHandler(IValidator<CadastrarUsuarioRequest> validator, IUsuarioRepository usuarioRepository, IUnitOfWork unitOfWork, IPasswordEncripter passwordEncripter)
     {
         _validator = validator;
         _usuarioRepository = usuarioRepository;

@@ -7,7 +7,7 @@ using RifaManager.Domain.Persistence.Repositories;
 
 namespace RifaManager.Application.UseCases.Rifas.SortearRifa;
 
-public sealed class SortearRifaUseCaseHandler(IRifaRepository rifaRepository) : ISortearRifaUseCase
+public sealed class SortearRifaHandler(IRifaRepository rifaRepository) : ISortearRifaUseCase
 {
     public async Task<SortearRifaResponse> Execute(Guid id, CancellationToken cancellationToken)
     {

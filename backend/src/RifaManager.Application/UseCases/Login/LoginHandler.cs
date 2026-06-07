@@ -9,7 +9,7 @@ using RifaManager.Domain.Security.Tokens;
 
 namespace RifaManager.Application.UseCases.Login;
 
-public sealed class LoginUseCaseHandler : ILoginUseCase
+public sealed class LoginHandler : ILoginUseCase
 {
     #region [ DEPENDENCIAS ]
 
@@ -18,7 +18,7 @@ public sealed class LoginUseCaseHandler : ILoginUseCase
     private readonly IUsuarioRepository _usuarioRepository;
     private readonly IAccessTokenGenerator _accessTokenGenerator;
 
-    public LoginUseCaseHandler(IValidator<LoginRequest> validator, IUsuarioRepository usuarioRepository, IPasswordEncripter passwordEncripter, IAccessTokenGenerator accessTokenGenerator)
+    public LoginHandler(IValidator<LoginRequest> validator, IUsuarioRepository usuarioRepository, IPasswordEncripter passwordEncripter, IAccessTokenGenerator accessTokenGenerator)
     {
         _validator = validator;
         _usuarioRepository = usuarioRepository;

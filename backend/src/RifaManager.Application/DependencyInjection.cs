@@ -38,28 +38,28 @@ public static class DependencyInjection
 
     private static void AddUseCases(this IServiceCollection services)
     {
-        services.AddScoped<ILoginUseCase, LoginUseCaseHandler>();
-        services.AddScoped<IAlterarStatusBilheteUseCase, AlterarStatusBilheteUseCaseHandler>();
-        services.AddScoped<ICancelarBilheteUseCase, CancelarBilheteUseCaseHandler>();
+        services.AddScoped<ILoginUseCase, LoginHandler>();
+        services.AddScoped<IAlterarStatusBilheteUseCase, AlterarStatusBilheteHandler>();
+        services.AddScoped<ICancelarBilheteUseCase, CancelarBilheteHandler>();
         services.AddScoped<IGetBilheteByIdUseCase, GetBilheteByIdHandler>();
         services.AddScoped<IListarBilhetesPorRifaUseCase, ListarBilhetesPorRifaHandler>();
         services.AddScoped<IListarBilhetesPorStatusUseCase, ListarBilhetesPorStatusHandler>();
-        services.AddScoped<IRegistrarCompraBilhetesUseCase, RegistrarCompraBilhetesUseCaseHandler>();
-        services.AddScoped<ICadastrarParticipanteUseCase, CadastrarParticipanteUseCaseHandler>();
-        services.AddScoped<IEditarParticipanteUseCase, EditarParticipanteUseCaseHandler>();
+        services.AddScoped<IRegistrarCompraBilhetesUseCase, RegistrarCompraBilhetesHandler>();
+        services.AddScoped<ICadastrarParticipanteUseCase, CadastrarParticipanteHandler>();
+        services.AddScoped<IEditarParticipanteUseCase, EditarParticipanteHandler>();
         services.AddScoped<IGetParticipanteByIdUseCase, GetParticipanteByIdHandler>();
         services.AddScoped<IListarParticipantesPorRifaUseCase, ListarParticipantesPorRifaHandler>();
-        services.AddScoped<IPesquisarParticipantesUseCase, PesquisarParticipantesUseCaseHandler>();
+        services.AddScoped<IPesquisarParticipantesUseCase, PesquisarParticipantesHandler>();
         services.AddScoped<IGetUsuarioByIdUseCase, GetUsuarioByIdHandler>();
         services.AddScoped<ICadastrarRifaUseCase, CadastrarRifaUseCaseHandler>();
-        services.AddScoped<IEditarRifaUseCase, EditarRifaUseCaseHandler>();
-        services.AddScoped<IEncerrarRifaUseCase, EncerrarRifaUseCaseHandler>();
+        services.AddScoped<IEditarRifaUseCase, EditarRifaHandler>();
+        services.AddScoped<IEncerrarRifaUseCase, EncerrarRifaHandler>();
         services.AddScoped<IGetRifaByIdUseCase, GetRifaByIdHandler>();
         services.AddScoped<IListarRifasUseCase, ListarRifasHandler>();
-        services.AddScoped<ISortearRifaUseCase, SortearRifaUseCaseHandler>();
-        services.AddScoped<ICadastrarUsuarioUseCase, CadastrarUsuarioUseCaseHandler>();
-        services.AddScoped<IEditarUsuarioUseCase, EditarUsuarioUseCaseHandler>();
-        services.AddScoped<IAtivarUsuarioUseCase, AtivarUsuarioUseCaseHandler>();
-        services.AddScoped<IDesativarUsuarioUseCase, DesativarUsuarioUseCaseHandler>();
+        services.AddScoped<ISortearRifaUseCase, SortearRifaHandler>();
+        services.AddScoped<ICadastrarUsuarioUseCase, CadastrarUsuarioHandler>();
+        services.AddScoped<IEditarUsuarioUseCase, EditarUsuarioHandler>();
+        services.AddScoped<IAtivarUsuarioUseCase, AtivarUsuarioHandler>();
+        services.AddScoped<IDesativarUsuarioUseCase, DesativarUsuarioHandler>();
     }
 }

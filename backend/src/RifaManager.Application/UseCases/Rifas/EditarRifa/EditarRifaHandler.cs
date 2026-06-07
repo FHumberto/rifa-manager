@@ -8,7 +8,7 @@ using RifaManager.Domain.Persistence.Repositories;
 
 namespace RifaManager.Application.UseCases.Rifas.EditarRifa;
 
-public sealed class EditarRifaUseCaseHandler : IEditarRifaUseCase
+public sealed class EditarRifaHandler : IEditarRifaUseCase
 {
     #region [ DEENDÊNCIAS ]
 
@@ -16,7 +16,7 @@ public sealed class EditarRifaUseCaseHandler : IEditarRifaUseCase
     private readonly IRifaRepository _rifaRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public EditarRifaUseCaseHandler(IValidator<EditarRifaRequest> validator, IRifaRepository rifaRepository, IUnitOfWork unitOfWork)
+    public EditarRifaHandler(IValidator<EditarRifaRequest> validator, IRifaRepository rifaRepository, IUnitOfWork unitOfWork)
     {
         _validator = validator;
         _rifaRepository = rifaRepository;
