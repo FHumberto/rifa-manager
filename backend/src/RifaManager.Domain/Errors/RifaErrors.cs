@@ -4,6 +4,9 @@ namespace RifaManager.Domain.Errors;
 
 public static class RifaErrors
 {
+    public static readonly Error RifaObrigatoria =
+        Error.Validation("Rifa.RifaObrigatoria", "A rifa é obrigatória.");
+
     public static readonly Error NomeObrigatorio =
         Error.Validation("Rifa.NomeObrigatorio", "O nome da rifa é obrigatório.");
 

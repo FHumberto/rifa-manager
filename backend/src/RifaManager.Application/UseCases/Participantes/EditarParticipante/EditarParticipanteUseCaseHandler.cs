@@ -43,7 +43,7 @@ public sealed class EditarParticipanteUseCaseHandler : IEditarParticipanteUseCas
             ?? throw new NotFoundException(ParticipanteErrors.ParticipanteNaoEncontrado.Description);
 
         if (participante.Bilhetes.Any(bilhete => bilhete.Rifa.Encerrada))
-            throw new BadRequestException("Nao e possivel editar participante vinculado a rifa encerrada.");
+            throw new BadRequestException(ParticipanteErrors.ParticipanteVinculadoRifaEncerrada.Description);
         return participante;
     }
 

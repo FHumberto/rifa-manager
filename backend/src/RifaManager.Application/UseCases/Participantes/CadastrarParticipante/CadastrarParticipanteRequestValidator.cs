@@ -8,7 +8,7 @@ public sealed class CadastrarParticipanteRequestValidator : AbstractValidator<Ca
     public CadastrarParticipanteRequestValidator()
     {
         RuleFor(request => request.RifaId)
-            .NotEmpty().WithMessage("A rifa e obrigatoria.");
+            .NotEmpty().WithMessage(RifaErrors.RifaObrigatoria.Description);
 
         RuleFor(request => request.Nome)
             .NotEmpty().WithMessage(ParticipanteErrors.NomeObrigatorio.Description);
