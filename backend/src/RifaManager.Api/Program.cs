@@ -16,6 +16,7 @@ app.UseExceptionHandler();
 app.UseHttpsRedirection();
 app.UseCorsPolicy();
 app.UseAuthentication();
+app.UseRateLimiter();
 app.UseAuthorization();
 app.MapControllers();
 

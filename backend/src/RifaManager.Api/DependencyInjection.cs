@@ -11,6 +11,7 @@ public static class DependencyInjection
     public static IServiceCollection AddApi(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
     {
         services.AddCorsPolicies(configuration, environment);
+        services.AddRateLimiterPolicies();
         services.AddProblemDetails();
         services.AddExceptionHandler<ExceptionMiddleware>();
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

@@ -1,3 +1,5 @@
+using RifaManager.Domain.Abstractions.Types;
+
 namespace RifaManager.Domain.Abstractions;
 
 public sealed class DomainException(Error error) : Exception(error.Description)
