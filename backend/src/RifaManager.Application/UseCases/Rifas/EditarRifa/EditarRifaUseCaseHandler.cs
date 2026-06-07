@@ -24,21 +24,21 @@ public sealed class EditarRifaUseCaseHandler : IEditarRifaUseCase
 
     #endregion
 
-    public async Task Execute(Guid id, EditarRifaRequest request)
+    public async Task Execute(Guid id, EditarRifaRequest request, CancellationToken cancellationToken)
     {
-        await ValidarRequisicao(request);
+        await ValidarRequisicao(request, cancellationToken);
 
-        Rifa rifa = await _rifaRepository.GetByIdAsync(id) ?? throw new NotFoundException(RifaErrors.RifaNaoEncontrada.Description);
+        Rifa rifa = await _rifaRepository.GetByIdAsync(id, cancellationToken) ?? throw new NotFoundException(RifaErrors.RifaNaoEncontrada.Description);
 
         rifa.Atualizar(request.Nome, request.Descricao, request.ValorBilhete, request.DataSorteio, request.Premio);
 
         await _rifaRepository.UpdateAsync(rifa);
-        await _unitOfWork.CommitAsync();
+        await _unitOfWork.CommitAsync(cancellationToken);
     }
 
-    private async Task ValidarRequisicao(EditarRifaRequest request)
+    private async Task ValidarRequisicao(EditarRifaRequest request, CancellationToken cancellationToken)
     {
-        ValidationResult validationResult = await _validator.ValidateAsync(request);
+        ValidationResult validationResult = await _validator.ValidateAsync(request, cancellationToken);
 
         if (!validationResult.IsValid)
             throw new BadRequestException(validationResult);

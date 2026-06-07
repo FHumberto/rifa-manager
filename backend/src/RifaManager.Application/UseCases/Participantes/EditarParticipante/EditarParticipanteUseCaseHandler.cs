@@ -24,21 +24,21 @@ public sealed class EditarParticipanteUseCaseHandler : IEditarParticipanteUseCas
 
     #endregion
 
-    public async Task Execute(Guid id, EditarParticipanteRequest request)
+    public async Task Execute(Guid id, EditarParticipanteRequest request, CancellationToken cancellationToken)
     {
-        await ValidarRequisicao(request);
+        await ValidarRequisicao(request, cancellationToken);
 
-        Participante participante = await ValidarParticipante(id);
+        Participante participante = await ValidarParticipante(id, cancellationToken);
 
         participante.Atualizar(request.Nome, request.Telefone, request.Observacao);
 
         await _participanteRepository.UpdateAsync(participante);
-        await _unitOfWork.CommitAsync();
+        await _unitOfWork.CommitAsync(cancellationToken);
     }
 
-    private async Task<Participante> ValidarParticipante(Guid id)
+    private async Task<Participante> ValidarParticipante(Guid id, CancellationToken cancellationToken)
     {
-        Participante participante = await _participanteRepository.GetByIdWithBilhetesAsync(id)
+        Participante participante = await _participanteRepository.GetByIdWithBilhetesAsync(id, cancellationToken)
             ?? throw new NotFoundException(ParticipanteErrors.ParticipanteNaoEncontrado.Description);
 
         if (participante.Bilhetes.Any(bilhete => bilhete.Rifa.Encerrada))
@@ -46,9 +46,9 @@ public sealed class EditarParticipanteUseCaseHandler : IEditarParticipanteUseCas
         return participante;
     }
 
-    private async Task ValidarRequisicao(EditarParticipanteRequest request)
+    private async Task ValidarRequisicao(EditarParticipanteRequest request, CancellationToken cancellationToken)
     {
-        ValidationResult validationResult = await _validator.ValidateAsync(request);
+        ValidationResult validationResult = await _validator.ValidateAsync(request, cancellationToken);
 
         if (!validationResult.IsValid)
             throw new BadRequestException(validationResult);

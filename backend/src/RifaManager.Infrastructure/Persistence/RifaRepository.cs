@@ -7,38 +7,38 @@ namespace RifaManager.Infrastructure.Persistence;
 
 internal sealed class RifaRepository(RifaDbContext context) : IRifaRepository
 {
-    public Task<Rifa?> GetByIdAsync(Guid id)
+    public Task<Rifa?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        return context.Rifas.FirstOrDefaultAsync(rifa => rifa.Id == id);
+        return context.Rifas.FirstOrDefaultAsync(rifa => rifa.Id == id, cancellationToken);
     }
 
-    public Task<Rifa?> GetByIdWithBilhetesAsync(Guid id)
+    public Task<Rifa?> GetByIdWithBilhetesAsync(Guid id, CancellationToken cancellationToken)
     {
         return context.Rifas
             .Include(rifa => rifa.Bilhetes)
             .ThenInclude(bilhete => bilhete.Participante)
-            .FirstOrDefaultAsync(rifa => rifa.Id == id);
+            .FirstOrDefaultAsync(rifa => rifa.Id == id, cancellationToken);
     }
 
-    public Task<Rifa?> GetByBilheteIdWithBilhetesAsync(Guid bilheteId)
+    public Task<Rifa?> GetByBilheteIdWithBilhetesAsync(Guid bilheteId, CancellationToken cancellationToken)
     {
         return context.Rifas
             .Include(rifa => rifa.Bilhetes)
-            .FirstOrDefaultAsync(rifa => rifa.Bilhetes.Any(bilhete => bilhete.Id == bilheteId));
+            .FirstOrDefaultAsync(rifa => rifa.Bilhetes.Any(bilhete => bilhete.Id == bilheteId), cancellationToken);
     }
 
-    public async Task<IReadOnlyList<Rifa>> GetAllAsync()
+    public async Task<IReadOnlyList<Rifa>> GetAllAsync(CancellationToken cancellationToken)
     {
         return await context.Rifas
             .AsNoTracking()
             .OrderBy(rifa => rifa.DataSorteio)
             .ThenBy(rifa => rifa.Nome)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task AddAsync(Rifa rifa)
+    public async Task AddAsync(Rifa rifa, CancellationToken cancellationToken)
     {
-        await context.Rifas.AddAsync(rifa);
+        await context.Rifas.AddAsync(rifa, cancellationToken);
     }
 
     public Task UpdateAsync(Rifa rifa)

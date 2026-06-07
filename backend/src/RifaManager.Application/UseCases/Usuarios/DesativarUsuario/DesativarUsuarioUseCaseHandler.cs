@@ -7,14 +7,14 @@ namespace RifaManager.Application.UseCases.Usuarios.DesativarUsuario;
 
 public sealed class DesativarUsuarioUseCaseHandler(IUsuarioRepository usuarioRepository, IUnitOfWork unitOfWork) : IDesativarUsuarioUseCase
 {
-    public async Task Execute(Guid id)
+    public async Task Execute(Guid id, CancellationToken cancellationToken)
     {
-        Usuario usuario = await usuarioRepository.GetByIdAsync(id)
+        Usuario usuario = await usuarioRepository.GetByIdAsync(id, cancellationToken)
             ?? throw new NotFoundException(UsuarioErrors.UsuarioNaoEncontrado.Description);
 
         usuario.Desativar();
 
         await usuarioRepository.UpdateAsync(usuario);
-        await unitOfWork.CommitAsync();
+        await unitOfWork.CommitAsync(cancellationToken);
     }
 }

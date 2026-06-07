@@ -36,13 +36,13 @@ public sealed class RegistrarCompraBilhetesUseCaseHandler : IRegistrarCompraBilh
 
     #endregion
 
-    public async Task<RegistrarCompraBilhetesResponse> Execute(Guid usuarioResponsavelId, RegistrarCompraBilhetesRequest request)
+    public async Task<RegistrarCompraBilhetesResponse> Execute(Guid usuarioResponsavelId, RegistrarCompraBilhetesRequest request, CancellationToken cancellationToken)
     {
-        await ValidarRequisicao(request);
+        await ValidarRequisicao(request, cancellationToken);
 
-        (Rifa rifa, Participante participante, Usuario usuarioResponsavel) = await ValidarDados(usuarioResponsavelId, request);
+        (Rifa rifa, Participante participante, Usuario usuarioResponsavel) = await ValidarDados(usuarioResponsavelId, request, cancellationToken);
 
-        int maiorNumero = await _bilheteRepository.GetMaiorNumeroByRifaIdAsync(rifa.Id);
+        int maiorNumero = await _bilheteRepository.GetMaiorNumeroByRifaIdAsync(rifa.Id, cancellationToken);
 
         List<Bilhete> bilhetes = [];
 
@@ -51,8 +51,8 @@ public sealed class RegistrarCompraBilhetesUseCaseHandler : IRegistrarCompraBilh
             bilhetes.Add(new Bilhete(maiorNumero + index, rifa, participante, usuarioResponsavel));
         }
 
-        await _bilheteRepository.AddRangeAsync(bilhetes);
-        await _unitOfWork.CommitAsync();
+        await _bilheteRepository.AddRangeAsync(bilhetes, cancellationToken);
+        await _unitOfWork.CommitAsync(cancellationToken);
 
         return new RegistrarCompraBilhetesResponse
         (
@@ -62,25 +62,25 @@ public sealed class RegistrarCompraBilhetesUseCaseHandler : IRegistrarCompraBilh
         );
     }
 
-    private async Task<(Rifa rifa, Participante participante, Usuario usuarioResponsavel)> ValidarDados(Guid usuarioResponsavelId, RegistrarCompraBilhetesRequest request)
+    private async Task<(Rifa rifa, Participante participante, Usuario usuarioResponsavel)> ValidarDados(Guid usuarioResponsavelId, RegistrarCompraBilhetesRequest request, CancellationToken cancellationToken)
     {
-        Rifa rifa = await _rifaRepository.GetByIdAsync(request.RifaId)
+        Rifa rifa = await _rifaRepository.GetByIdAsync(request.RifaId, cancellationToken)
             ?? throw new NotFoundException(RifaErrors.RifaNaoEncontrada.Description);
 
         rifa.ValidarCompraDeBilhetes();
 
-        Participante participante = await _participanteRepository.GetByIdAsync(request.ParticipanteId)
+        Participante participante = await _participanteRepository.GetByIdAsync(request.ParticipanteId, cancellationToken)
             ?? throw new NotFoundException("Participante nao encontrado.");
 
-        Usuario usuarioResponsavel = await _usuarioRepository.GetByIdAsync(usuarioResponsavelId)
+        Usuario usuarioResponsavel = await _usuarioRepository.GetByIdAsync(usuarioResponsavelId, cancellationToken)
             ?? throw new NotFoundException("Usuario responsavel nao encontrado.");
 
         return (rifa, participante, usuarioResponsavel);
     }
 
-    private async Task ValidarRequisicao(RegistrarCompraBilhetesRequest request)
+    private async Task ValidarRequisicao(RegistrarCompraBilhetesRequest request, CancellationToken cancellationToken)
     {
-        ValidationResult validationResult = await _validator.ValidateAsync(request);
+        ValidationResult validationResult = await _validator.ValidateAsync(request, cancellationToken);
 
         if (!validationResult.IsValid)
             throw new BadRequestException(validationResult);

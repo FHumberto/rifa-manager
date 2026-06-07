@@ -24,24 +24,24 @@ public sealed class EditarUsuarioUseCaseHandler : IEditarUsuarioUseCase
 
     #endregion
 
-    public async Task Execute(Guid id, EditarUsuarioRequest request)
+    public async Task Execute(Guid id, EditarUsuarioRequest request, CancellationToken cancellationToken)
     {
-        await ValidarRequisicao(request);
+        await ValidarRequisicao(request, cancellationToken);
 
-        Usuario usuario = await ValidarUsuario(id, request);
+        Usuario usuario = await ValidarUsuario(id, request, cancellationToken);
 
         usuario.Atualizar(request.Nome, request.Email, request.Perfil);
 
         await _usuarioRepository.UpdateAsync(usuario);
-        await _unitOfWork.CommitAsync();
+        await _unitOfWork.CommitAsync(cancellationToken);
     }
 
-    private async Task<Usuario> ValidarUsuario(Guid id, EditarUsuarioRequest request)
+    private async Task<Usuario> ValidarUsuario(Guid id, EditarUsuarioRequest request, CancellationToken cancellationToken)
     {
-        Usuario usuario = await _usuarioRepository.GetByIdAsync(id)
+        Usuario usuario = await _usuarioRepository.GetByIdAsync(id, cancellationToken)
             ?? throw new NotFoundException(UsuarioErrors.UsuarioNaoEncontrado.Description);
 
-        Usuario? usuarioComMesmoEmail = await _usuarioRepository.GetByEmailAsync(request.Email);
+        Usuario? usuarioComMesmoEmail = await _usuarioRepository.GetByEmailAsync(request.Email, cancellationToken);
 
         if (usuarioComMesmoEmail is not null && usuarioComMesmoEmail.Id != id)
             throw new BadRequestException(UsuarioErrors.EmailJaCadastrado.Description);
@@ -49,9 +49,9 @@ public sealed class EditarUsuarioUseCaseHandler : IEditarUsuarioUseCase
         return usuario;
     }
 
-    private async Task ValidarRequisicao(EditarUsuarioRequest request)
+    private async Task ValidarRequisicao(EditarUsuarioRequest request, CancellationToken cancellationToken)
     {
-        ValidationResult validationResult = await _validator.ValidateAsync(request);
+        ValidationResult validationResult = await _validator.ValidateAsync(request, cancellationToken);
 
         if (!validationResult.IsValid)
             throw new BadRequestException(validationResult);

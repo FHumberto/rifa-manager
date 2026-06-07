@@ -9,9 +9,9 @@ namespace RifaManager.Application.UseCases.Rifas.SortearRifa;
 
 public sealed class SortearRifaUseCaseHandler(IRifaRepository rifaRepository) : ISortearRifaUseCase
 {
-    public async Task<SortearRifaResponse> Execute(Guid id)
+    public async Task<SortearRifaResponse> Execute(Guid id, CancellationToken cancellationToken)
     {
-        Rifa rifa = await rifaRepository.GetByIdWithBilhetesAsync(id)
+        Rifa rifa = await rifaRepository.GetByIdWithBilhetesAsync(id, cancellationToken)
             ?? throw new NotFoundException(RifaErrors.RifaNaoEncontrada.Description);
 
         List<Bilhete> bilhetesPagos = rifa.Bilhetes

@@ -26,31 +26,31 @@ public sealed class CadastrarUsuarioUseCaseHandler : ICadastrarUsuarioUseCase
 
     #endregion
 
-    public async Task<CadastrarUsuarioResponse> Execute(CadastrarUsuarioRequest request)
+    public async Task<CadastrarUsuarioResponse> Execute(CadastrarUsuarioRequest request, CancellationToken cancellationToken)
     {
-        await ValidarRequisicao(request);
-        await ValidarUsuario(request);
+        await ValidarRequisicao(request, cancellationToken);
+        await ValidarUsuario(request, cancellationToken);
 
         string senhaHash = _passwordEncripter.Encrypt(request.Senha);
         Usuario usuario = new(request.Nome, request.Email, senhaHash, request.Perfil, true);
 
-        await _usuarioRepository.AddAsync(usuario);
-        await _unitOfWork.CommitAsync();
+        await _usuarioRepository.AddAsync(usuario, cancellationToken);
+        await _unitOfWork.CommitAsync(cancellationToken);
 
         return new CadastrarUsuarioResponse(usuario.Id);
     }
 
-    private async Task ValidarUsuario(CadastrarUsuarioRequest request)
+    private async Task ValidarUsuario(CadastrarUsuarioRequest request, CancellationToken cancellationToken)
     {
-        Usuario? usuarioExistente = await _usuarioRepository.GetByEmailAsync(request.Email);
+        Usuario? usuarioExistente = await _usuarioRepository.GetByEmailAsync(request.Email, cancellationToken);
 
         if (usuarioExistente is not null)
             throw new BadRequestException("E-mail ja cadastrado.");
     }
 
-    private async Task ValidarRequisicao(CadastrarUsuarioRequest request)
+    private async Task ValidarRequisicao(CadastrarUsuarioRequest request, CancellationToken cancellationToken)
     {
-        ValidationResult validationResult = await _validator.ValidateAsync(request);
+        ValidationResult validationResult = await _validator.ValidateAsync(request, cancellationToken);
 
         if (!validationResult.IsValid)
             throw new BadRequestException(validationResult);

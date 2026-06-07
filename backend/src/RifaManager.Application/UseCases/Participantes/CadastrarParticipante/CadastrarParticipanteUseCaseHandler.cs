@@ -26,30 +26,30 @@ public sealed class CadastrarParticipanteUseCaseHandler : ICadastrarParticipante
 
     #endregion
 
-    public async Task<CadastrarParticipanteResponse> Execute(CadastrarParticipanteRequest request)
+    public async Task<CadastrarParticipanteResponse> Execute(CadastrarParticipanteRequest request, CancellationToken cancellationToken)
     {
-        await ValidarRequisicao(request);
-        await ValidarRifa(request);
+        await ValidarRequisicao(request, cancellationToken);
+        await ValidarRifa(request, cancellationToken);
 
         Participante participante = new(request.Nome, request.Telefone, request.Observacao);
 
-        await _participanteRepository.AddAsync(participante);
-        await _unitOfWork.CommitAsync();
+        await _participanteRepository.AddAsync(participante, cancellationToken);
+        await _unitOfWork.CommitAsync(cancellationToken);
 
         return new CadastrarParticipanteResponse(participante.Id);
     }
 
-    private async Task ValidarRifa(CadastrarParticipanteRequest request)
+    private async Task ValidarRifa(CadastrarParticipanteRequest request, CancellationToken cancellationToken)
     {
-        Rifa rifa = await _rifaRepository.GetByIdAsync(request.RifaId)
+        Rifa rifa = await _rifaRepository.GetByIdAsync(request.RifaId, cancellationToken)
             ?? throw new NotFoundException(RifaErrors.RifaNaoEncontrada.Description);
 
         rifa.ValidarCompraDeBilhetes();
     }
 
-    private async Task ValidarRequisicao(CadastrarParticipanteRequest request)
+    private async Task ValidarRequisicao(CadastrarParticipanteRequest request, CancellationToken cancellationToken)
     {
-        ValidationResult validationResult = await _validator.ValidateAsync(request);
+        ValidationResult validationResult = await _validator.ValidateAsync(request, cancellationToken);
 
         if (!validationResult.IsValid)
             throw new BadRequestException(validationResult);

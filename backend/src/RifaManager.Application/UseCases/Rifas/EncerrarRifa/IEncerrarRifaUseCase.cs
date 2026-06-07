@@ -2,5 +2,5 @@ namespace RifaManager.Application.UseCases.Rifas.EncerrarRifa;
 
 public interface IEncerrarRifaUseCase
 {
-    Task Execute(Guid id);
+    Task Execute(Guid id, CancellationToken cancellationToken);
 }

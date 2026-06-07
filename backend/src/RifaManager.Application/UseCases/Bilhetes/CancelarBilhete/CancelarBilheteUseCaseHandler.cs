@@ -7,9 +7,9 @@ namespace RifaManager.Application.UseCases.Bilhetes.CancelarBilhete;
 
 public sealed class CancelarBilheteUseCaseHandler(IRifaRepository rifaRepository, IUnitOfWork unitOfWork) : ICancelarBilheteUseCase
 {
-    public async Task Execute(Guid id)
+    public async Task Execute(Guid id, CancellationToken cancellationToken)
     {
-        Rifa rifa = await rifaRepository.GetByBilheteIdWithBilhetesAsync(id)
+        Rifa rifa = await rifaRepository.GetByBilheteIdWithBilhetesAsync(id, cancellationToken)
             ?? throw new NotFoundException(BilheteErrors.BilheteNaoEncontrado.Description);
 
         Bilhete bilhete = rifa.Bilhetes.First(bilhete => bilhete.Id == id);
@@ -17,6 +17,6 @@ public sealed class CancelarBilheteUseCaseHandler(IRifaRepository rifaRepository
         rifa.MarcarBilheteComoCancelado(bilhete);
 
         await rifaRepository.UpdateAsync(rifa);
-        await unitOfWork.CommitAsync();
+        await unitOfWork.CommitAsync(cancellationToken);
     }
 }

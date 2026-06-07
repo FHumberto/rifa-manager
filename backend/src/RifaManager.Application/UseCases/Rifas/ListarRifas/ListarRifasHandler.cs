@@ -5,9 +5,9 @@ namespace RifaManager.Application.UseCases.Rifas.ListarRifas;
 
 public sealed class ListarRifasHandler(IRifaRepository rifaRepository) : IListarRifasUseCase
 {
-    public async Task<IReadOnlyList<ListarRifasResponse>> Execute()
+    public async Task<IReadOnlyList<ListarRifasResponse>> Execute(CancellationToken cancellationToken)
     {
-        IReadOnlyList<Rifa> rifas = await rifaRepository.GetAllAsync();
+        IReadOnlyList<Rifa> rifas = await rifaRepository.GetAllAsync(cancellationToken);
 
         return rifas.Select(rifa => new ListarRifasResponse
                     (

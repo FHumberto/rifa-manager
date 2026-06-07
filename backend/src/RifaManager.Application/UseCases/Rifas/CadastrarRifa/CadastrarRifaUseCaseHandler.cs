@@ -23,21 +23,21 @@ public sealed class CadastrarRifaUseCaseHandler : ICadastrarRifaUseCase
 
     #endregion
 
-    public async Task<CadastrarRifaResponse> Execute(CadastrarRifaRequest request)
+    public async Task<CadastrarRifaResponse> Execute(CadastrarRifaRequest request, CancellationToken cancellationToken)
     {
-        await ValidarRequisicao(request);
+        await ValidarRequisicao(request, cancellationToken);
 
         Rifa rifa = new(request.Nome, request.Descricao, request.ValorBilhete, request.DataSorteio, request.Premio);
 
-        await _rifaRepository.AddAsync(rifa);
-        await _unitOfWork.CommitAsync();
+        await _rifaRepository.AddAsync(rifa, cancellationToken);
+        await _unitOfWork.CommitAsync(cancellationToken);
 
         return new CadastrarRifaResponse(rifa.Id);
     }
 
-    private async Task ValidarRequisicao(CadastrarRifaRequest request)
+    private async Task ValidarRequisicao(CadastrarRifaRequest request, CancellationToken cancellationToken)
     {
-        ValidationResult validationResult = await _validator.ValidateAsync(request);
+        ValidationResult validationResult = await _validator.ValidateAsync(request, cancellationToken);
 
         if (!validationResult.IsValid)
             throw new BadRequestException(validationResult);

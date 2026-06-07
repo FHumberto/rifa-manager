@@ -7,12 +7,12 @@ namespace RifaManager.Application.UseCases.Bilhetes.ListarPorRifa;
 
 public sealed class ListarBilhetesPorRifaHandler(IBilheteRepository bilheteRepository, IRifaRepository rifaRepository) : IListarBilhetesPorRifaUseCase
 {
-    public async Task<IReadOnlyList<ListarBilhetesPorRifaResponse>> Execute(Guid rifaId)
+    public async Task<IReadOnlyList<ListarBilhetesPorRifaResponse>> Execute(Guid rifaId, CancellationToken cancellationToken)
     {
-        if (await rifaRepository.GetByIdAsync(rifaId) is null)
+        if (await rifaRepository.GetByIdAsync(rifaId, cancellationToken) is null)
             throw new NotFoundException(RifaErrors.RifaNaoEncontrada.Description);
 
-        IReadOnlyList<Bilhete> bilhetes = await bilheteRepository.GetByRifaIdAsync(rifaId);
+        IReadOnlyList<Bilhete> bilhetes = await bilheteRepository.GetByRifaIdAsync(rifaId, cancellationToken);
 
         return bilhetes
             .Select(bilhete => new ListarBilhetesPorRifaResponse

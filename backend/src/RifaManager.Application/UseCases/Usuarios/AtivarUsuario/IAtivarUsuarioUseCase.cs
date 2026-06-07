@@ -2,5 +2,5 @@ namespace RifaManager.Application.UseCases.Usuarios.AtivarUsuario;
 
 public interface IAtivarUsuarioUseCase
 {
-    Task Execute(Guid id);
+    Task Execute(Guid id, CancellationToken cancellationToken);
 }

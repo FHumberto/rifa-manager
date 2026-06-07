@@ -10,17 +10,19 @@ using RifaManager.Application.UseCases.Rifas.SortearRifa;
 
 namespace RifaManager.Api.Controllers.v1;
 
-[ApiVersion(1)]
 [Authorize]
+[ApiVersion(1)]
 public sealed class RifasController : BaseController
 {
+    #region [ LEITURA ]
+
     [HttpGet]
     [EndpointSummary("Listar rifas")]
     [ProducesResponseType(typeof(IReadOnlyList<ListarRifasResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> Listar([FromServices] IListarRifasUseCase useCase)
+    public async Task<IActionResult> Listar([FromServices] IListarRifasUseCase useCase, CancellationToken cancellationToken)
     {
-        IReadOnlyList<ListarRifasResponse> response = await useCase.Execute();
+        IReadOnlyList<ListarRifasResponse> response = await useCase.Execute(cancellationToken);
 
         return Ok(response);
     }
@@ -30,21 +32,25 @@ public sealed class RifasController : BaseController
     [ProducesResponseType(typeof(GetRifaByIdResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> ObterPorId([FromServices] IGetRifaByIdUseCase useCase, [FromRoute] Guid id)
+    public async Task<IActionResult> ObterPorId([FromServices] IGetRifaByIdUseCase useCase, [FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        GetRifaByIdResponse response = await useCase.Execute(id);
+        GetRifaByIdResponse response = await useCase.Execute(id, cancellationToken);
 
         return Ok(response);
     }
+
+    #endregion
+
+    #region [ ESCRITA ]
 
     [HttpPost]
     [EndpointSummary("Cadastrar rifa")]
     [ProducesResponseType(typeof(CadastrarRifaResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> Cadastrar([FromServices] ICadastrarRifaUseCase useCase, [FromBody] CadastrarRifaRequest request)
+    public async Task<IActionResult> Cadastrar([FromServices] ICadastrarRifaUseCase useCase, [FromBody] CadastrarRifaRequest request, CancellationToken cancellationToken)
     {
-        CadastrarRifaResponse response = await useCase.Execute(request);
+        CadastrarRifaResponse response = await useCase.Execute(request, cancellationToken);
 
         return CreatedAtAction(nameof(ObterPorId), new { id = response.Id }, response);
     }
@@ -55,9 +61,9 @@ public sealed class RifasController : BaseController
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Editar([FromServices] IEditarRifaUseCase useCase, [FromRoute] Guid id, [FromBody] EditarRifaRequest request)
+    public async Task<IActionResult> Editar([FromServices] IEditarRifaUseCase useCase, [FromRoute] Guid id, [FromBody] EditarRifaRequest request, CancellationToken cancellationToken)
     {
-        await useCase.Execute(id, request);
+        await useCase.Execute(id, request, cancellationToken);
 
         return NoContent();
     }
@@ -68,9 +74,9 @@ public sealed class RifasController : BaseController
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Encerrar([FromServices] IEncerrarRifaUseCase useCase, [FromRoute] Guid id)
+    public async Task<IActionResult> Encerrar([FromServices] IEncerrarRifaUseCase useCase, [FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        await useCase.Execute(id);
+        await useCase.Execute(id, cancellationToken);
 
         return NoContent();
     }
@@ -81,10 +87,11 @@ public sealed class RifasController : BaseController
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Sortear([FromServices] ISortearRifaUseCase useCase, [FromRoute] Guid id)
+    public async Task<IActionResult> Sortear([FromServices] ISortearRifaUseCase useCase, [FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        SortearRifaResponse response = await useCase.Execute(id);
+        SortearRifaResponse response = await useCase.Execute(id, cancellationToken);
 
         return Ok(response);
     }
+    #endregion
 }

@@ -8,29 +8,29 @@ namespace RifaManager.Infrastructure.Persistence;
 
 internal sealed class ParticipanteRepository(RifaDbContext context) : IParticipanteRepository
 {
-    public Task<Participante?> GetByIdAsync(Guid id)
+    public Task<Participante?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        return context.Participantes.FirstOrDefaultAsync(participante => participante.Id == id);
+        return context.Participantes.FirstOrDefaultAsync(participante => participante.Id == id, cancellationToken);
     }
 
-    public Task<Participante?> GetByIdWithBilhetesAsync(Guid id)
+    public Task<Participante?> GetByIdWithBilhetesAsync(Guid id, CancellationToken cancellationToken)
     {
         return context.Participantes
             .Include(participante => participante.Bilhetes)
             .ThenInclude(bilhete => bilhete.Rifa)
-            .FirstOrDefaultAsync(participante => participante.Id == id);
+            .FirstOrDefaultAsync(participante => participante.Id == id, cancellationToken);
     }
 
-    public async Task<IReadOnlyList<Participante>> GetByRifaIdAsync(Guid rifaId)
+    public async Task<IReadOnlyList<Participante>> GetByRifaIdAsync(Guid rifaId, CancellationToken cancellationToken)
     {
         return await context.Participantes
             .AsNoTracking()
             .Where(participante => participante.Bilhetes.Any(bilhete => bilhete.RifaId == rifaId))
             .OrderBy(participante => participante.Nome)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<IReadOnlyList<Participante>> SearchAsync(string? nome, string? telefone, int? numeroBilhete, StatusPagamento? statusPagamento)
+    public async Task<IReadOnlyList<Participante>> SearchAsync(string? nome, string? telefone, int? numeroBilhete, StatusPagamento? statusPagamento, CancellationToken cancellationToken)
     {
         IQueryable<Participante> query = context.Participantes
             .AsNoTracking()
@@ -51,12 +51,12 @@ internal sealed class ParticipanteRepository(RifaDbContext context) : IParticipa
 
         return await query
             .OrderBy(participante => participante.Nome)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task AddAsync(Participante participante)
+    public async Task AddAsync(Participante participante, CancellationToken cancellationToken)
     {
-        await context.Participantes.AddAsync(participante);
+        await context.Participantes.AddAsync(participante, cancellationToken);
     }
 
     public Task UpdateAsync(Participante participante)

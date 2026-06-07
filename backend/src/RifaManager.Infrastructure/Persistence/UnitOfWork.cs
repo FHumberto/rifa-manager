@@ -5,8 +5,8 @@ namespace RifaManager.Infrastructure.Persistence;
 
 internal sealed class UnitOfWork(RifaDbContext context) : IUnitOfWork
 {
-    public Task CommitAsync()
+    public Task CommitAsync(CancellationToken cancellationToken)
     {
-        return context.SaveChangesAsync();
+        return context.SaveChangesAsync(cancellationToken);
     }
 }

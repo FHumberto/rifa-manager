@@ -7,22 +7,22 @@ namespace RifaManager.Infrastructure.Persistence;
 
 internal sealed class UsuarioRepository(RifaDbContext context) : IUsuarioRepository
 {
-    public Task<Usuario?> GetByIdAsync(Guid id)
+    public Task<Usuario?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return context.Usuarios
-            .FirstOrDefaultAsync(usuario => usuario.Id == id);
+            .FirstOrDefaultAsync(usuario => usuario.Id == id, cancellationToken);
     }
 
-    public Task<Usuario?> GetByEmailAsync(string email)
+    public Task<Usuario?> GetByEmailAsync(string email, CancellationToken cancellationToken)
     {
         return context.Usuarios
             .AsNoTracking()
-            .FirstOrDefaultAsync(usuario => usuario.Email == email);
+            .FirstOrDefaultAsync(usuario => usuario.Email == email, cancellationToken);
     }
 
-    public async Task AddAsync(Usuario usuario)
+    public async Task AddAsync(Usuario usuario, CancellationToken cancellationToken)
     {
-        await context.Usuarios.AddAsync(usuario);
+        await context.Usuarios.AddAsync(usuario, cancellationToken);
     }
 
     public Task UpdateAsync(Usuario usuario)

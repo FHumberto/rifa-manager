@@ -25,11 +25,11 @@ public sealed class AlterarStatusBilheteUseCaseHandler : IAlterarStatusBilheteUs
 
     #endregion
 
-    public async Task Execute(Guid id, AlterarStatusBilheteRequest request)
+    public async Task Execute(Guid id, AlterarStatusBilheteRequest request, CancellationToken cancellationToken)
     {
-        await ValidarRequisicao(request);
+        await ValidarRequisicao(request, cancellationToken);
 
-        Rifa rifa = await _rifaRepository.GetByBilheteIdWithBilhetesAsync(id)
+        Rifa rifa = await _rifaRepository.GetByBilheteIdWithBilhetesAsync(id, cancellationToken)
             ?? throw new NotFoundException(BilheteErrors.BilheteNaoEncontrado.Description);
 
         Bilhete bilhete = rifa.Bilhetes.First(bilhete => bilhete.Id == id);
@@ -48,12 +48,12 @@ public sealed class AlterarStatusBilheteUseCaseHandler : IAlterarStatusBilheteUs
         }
 
         await _rifaRepository.UpdateAsync(rifa);
-        await _unitOfWork.CommitAsync();
+        await _unitOfWork.CommitAsync(cancellationToken);
     }
 
-    private async Task ValidarRequisicao(AlterarStatusBilheteRequest request)
+    private async Task ValidarRequisicao(AlterarStatusBilheteRequest request, CancellationToken cancellationToken)
     {
-        ValidationResult validationResult = await _validator.ValidateAsync(request);
+        ValidationResult validationResult = await _validator.ValidateAsync(request, cancellationToken);
 
         if (!validationResult.IsValid)
             throw new BadRequestException(validationResult);

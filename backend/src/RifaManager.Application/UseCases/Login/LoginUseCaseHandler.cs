@@ -28,20 +28,20 @@ public sealed class LoginUseCaseHandler : ILoginUseCase
 
     #endregion
 
-    public async Task<LoginResponse> Execute(LoginRequest request)
+    public async Task<LoginResponse> Execute(LoginRequest request, CancellationToken cancellationToken)
     {
-        await ValidarRequisicao(request);
+        await ValidarRequisicao(request, cancellationToken);
 
-        Usuario? usuario = await ValidarUsuario(request);
+        Usuario? usuario = await ValidarUsuario(request, cancellationToken);
 
         string token = _accessTokenGenerator.Generate(usuario!);
 
         return new LoginResponse(token);
     }
 
-    private async Task<Usuario?> ValidarUsuario(LoginRequest request)
+    private async Task<Usuario?> ValidarUsuario(LoginRequest request, CancellationToken cancellationToken)
     {
-        Usuario? usuario = await _usuarioRepository.GetByEmailAsync(request.Email);
+        Usuario? usuario = await _usuarioRepository.GetByEmailAsync(request.Email, cancellationToken);
 
         if (usuario is null || !_passwordEncripter.IsValid(request.Senha, usuario.Senha))
             throw new UnauthorizedException(UsuarioErrors.UsuarioSenhaInvalida.Description);
@@ -52,9 +52,9 @@ public sealed class LoginUseCaseHandler : ILoginUseCase
         return usuario;
     }
 
-    private async Task ValidarRequisicao(LoginRequest request)
+    private async Task ValidarRequisicao(LoginRequest request, CancellationToken cancellationToken)
     {
-        ValidationResult validationResult = await _validator.ValidateAsync(request);
+        ValidationResult validationResult = await _validator.ValidateAsync(request, cancellationToken);
 
         if (!validationResult.IsValid)
             throw new BadRequestException(validationResult);

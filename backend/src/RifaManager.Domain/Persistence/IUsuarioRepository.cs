@@ -4,11 +4,11 @@ namespace RifaManager.Domain.Persistence;
 
 public interface IUsuarioRepository
 {
-    Task<Usuario?> GetByIdAsync(Guid id);
+    Task<Usuario?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
-    Task<Usuario?> GetByEmailAsync(string email);
+    Task<Usuario?> GetByEmailAsync(string email, CancellationToken cancellationToken);
 
-    Task AddAsync(Usuario usuario);
+    Task AddAsync(Usuario usuario, CancellationToken cancellationToken);
 
     Task UpdateAsync(Usuario usuario);
 }

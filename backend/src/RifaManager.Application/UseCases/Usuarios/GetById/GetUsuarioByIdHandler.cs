@@ -7,9 +7,9 @@ namespace RifaManager.Application.UseCases.Usuarios.GetById;
 
 public sealed class GetUsuarioByIdHandler(IUsuarioRepository usuarioRepository) : IGetUsuarioByIdUseCase
 {
-    public async Task<GetUsuarioByIdResponse> Execute(Guid id)
+    public async Task<GetUsuarioByIdResponse> Execute(Guid id, CancellationToken cancellationToken)
     {
-        Usuario usuario = await usuarioRepository.GetByIdAsync(id)
+        Usuario usuario = await usuarioRepository.GetByIdAsync(id, cancellationToken)
             ?? throw new NotFoundException(UsuarioErrors.UsuarioNaoEncontrado.Description);
 
         return new GetUsuarioByIdResponse

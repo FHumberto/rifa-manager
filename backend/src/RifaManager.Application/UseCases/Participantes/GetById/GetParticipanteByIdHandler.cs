@@ -7,9 +7,9 @@ namespace RifaManager.Application.UseCases.Participantes.GetById;
 
 public sealed class GetParticipanteByIdHandler(IParticipanteRepository participanteRepository) : IGetParticipanteByIdUseCase
 {
-    public async Task<GetParticipanteByIdResponse> Execute(Guid id)
+    public async Task<GetParticipanteByIdResponse> Execute(Guid id, CancellationToken cancellationToken)
     {
-        Participante participante = await participanteRepository.GetByIdWithBilhetesAsync(id)
+        Participante participante = await participanteRepository.GetByIdWithBilhetesAsync(id, cancellationToken)
             ?? throw new NotFoundException(ParticipanteErrors.ParticipanteNaoEncontrado.Description);
 
         return new GetParticipanteByIdResponse

@@ -8,16 +8,16 @@ namespace RifaManager.Infrastructure.Persistence;
 
 internal sealed class BilheteRepository(RifaDbContext context) : IBilheteRepository
 {
-    public Task<Bilhete?> GetByIdAsync(Guid id)
+    public Task<Bilhete?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return context.Bilhetes
             .AsNoTracking()
             .Include(bilhete => bilhete.Participante)
             .Include(bilhete => bilhete.UsuarioResponsavel)
-            .FirstOrDefaultAsync(bilhete => bilhete.Id == id);
+            .FirstOrDefaultAsync(bilhete => bilhete.Id == id, cancellationToken);
     }
 
-    public async Task<IReadOnlyList<Bilhete>> GetByRifaIdAsync(Guid rifaId)
+    public async Task<IReadOnlyList<Bilhete>> GetByRifaIdAsync(Guid rifaId, CancellationToken cancellationToken)
     {
         return await context.Bilhetes
             .AsNoTracking()
@@ -25,10 +25,10 @@ internal sealed class BilheteRepository(RifaDbContext context) : IBilheteReposit
             .Include(bilhete => bilhete.UsuarioResponsavel)
             .Where(bilhete => bilhete.RifaId == rifaId)
             .OrderBy(bilhete => bilhete.Numero)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<IReadOnlyList<Bilhete>> GetByStatusAsync(StatusPagamento status, Guid? rifaId)
+    public async Task<IReadOnlyList<Bilhete>> GetByStatusAsync(StatusPagamento status, Guid? rifaId, CancellationToken cancellationToken)
     {
         IQueryable<Bilhete> query = context.Bilhetes
             .AsNoTracking()
@@ -43,19 +43,19 @@ internal sealed class BilheteRepository(RifaDbContext context) : IBilheteReposit
 
         return await query
             .OrderBy(bilhete => bilhete.Numero)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<int> GetMaiorNumeroByRifaIdAsync(Guid rifaId)
+    public async Task<int> GetMaiorNumeroByRifaIdAsync(Guid rifaId, CancellationToken cancellationToken)
     {
         return await context.Bilhetes
             .Where(bilhete => bilhete.RifaId == rifaId)
             .Select(bilhete => (int?)bilhete.Numero)
-            .MaxAsync() ?? 0;
+            .MaxAsync(cancellationToken) ?? 0;
     }
 
-    public async Task AddRangeAsync(IEnumerable<Bilhete> bilhetes)
+    public async Task AddRangeAsync(IEnumerable<Bilhete> bilhetes, CancellationToken cancellationToken)
     {
-        await context.Bilhetes.AddRangeAsync(bilhetes);
+        await context.Bilhetes.AddRangeAsync(bilhetes, cancellationToken);
     }
 }
