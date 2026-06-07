@@ -116,6 +116,25 @@ public sealed class RifaTests
         exception.Error.ShouldBe(RifaErrors.NomeObrigatorio);
     }
 
+    [Fact(DisplayName = "Deve validar compra de bilhetes em rifa aberta")]
+    public void Deve_validar_compra_de_bilhetes_em_rifa_aberta()
+    {
+        Rifa rifa = CriarRifa();
+
+        Should.NotThrow(rifa.ValidarCompraDeBilhetes);
+    }
+
+    [Fact(DisplayName = "Nao deve validar compra de bilhetes em rifa encerrada")]
+    public void Nao_deve_validar_compra_de_bilhetes_em_rifa_encerrada()
+    {
+        Rifa rifa = CriarRifa();
+        rifa.Encerrar();
+
+        DomainException exception = Should.Throw<DomainException>(rifa.ValidarCompraDeBilhetes);
+
+        exception.Error.ShouldBe(RifaErrors.CompraEmRifaEncerrada);
+    }
+
     [Fact(DisplayName = "Deve encerrar rifa aberta")]
     public void Deve_encerrar_rifa_aberta()
     {

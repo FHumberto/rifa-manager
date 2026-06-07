@@ -1,141 +1,200 @@
 # Requisitos
 
-## Visão Geral
+## Visao Geral
 
-O sistema permitirá que usuários autenticados cadastrem rifas, participantes, bilhetes e controlem pagamentos.
+O sistema permite que usuarios autenticados gerenciem rifas, participantes, bilhetes, pagamentos e sorteios.
+
+Administradores tambem podem gerenciar usuarios do sistema.
 
 # Requisitos Funcionais
 
-## RF001 - Autenticação
+## RF001 - Autenticacao
 
-O sistema deve permitir que usuários realizem login utilizando e-mail cadastrado e senha.
+O sistema deve permitir que usuarios realizem login utilizando e-mail cadastrado e senha.
 
-## RF002 - Cadastro de usuários
+Usuarios inativos nao devem conseguir acessar o sistema.
+
+## RF002 - Cadastro de usuarios
 
 O administrador deve conseguir:
 
-- cadastrar usuários
-- editar usuários
-- ativar/desativar usuários
+- cadastrar usuarios
+- consultar usuario por id
+- editar usuarios
+- ativar/desativar usuarios
 
-## RF003 - Cadastro e edição de rifas
+## RF003 - Cadastro, consulta e edicao de rifas
 
-O sistema deve permitir cadastrar e editar uma rifa contendo:
+O sistema deve permitir:
+
+- cadastrar rifas
+- listar rifas
+- consultar rifa por id
+- editar rifas
+- encerrar rifas
+
+Uma rifa deve conter:
 
 - nome
-- descrição
+- descricao
 - valor do bilhete
 - data do sorteio
-- prêmio
+- premio
+- status de encerramento
 
-## RF004 - Geração de bilhetes
+## RF004 - Geracao de bilhetes
 
-O sistema deve gerar bilhetes conforme as compras forem registradas, sem exigir uma quantidade máxima na criação da rifa.
+O sistema deve gerar bilhetes conforme as compras forem registradas, sem exigir uma quantidade maxima na criacao da rifa.
 
 Exemplo:
 
 - uma compra de 3 bilhetes gera 3 novos bilhetes vinculados ao participante
 
-## RF005 - Cadastro de participantes
+## RF005 - Cadastro, consulta e edicao de participantes
 
-O sistema deve permitir cadastrar participantes contendo:
+O sistema deve permitir:
+
+- cadastrar participantes
+- consultar participante por id
+- listar participantes por rifa
+- pesquisar participantes
+- editar participantes
+
+Um participante deve conter:
 
 - nome
 - telefone
-- observação
+- observacao
 
 ## RF006 - Registro de compra de bilhetes
 
 O sistema deve permitir registrar a compra de um ou mais bilhetes por um participante.
 
-Ao registrar a compra, o sistema deve criar os bilhetes da rifa e vinculá-los ao participante.
+Ao registrar a compra, o sistema deve:
+
+- criar os bilhetes da rifa
+- vincular os bilhetes ao participante
+- vincular os bilhetes ao usuario responsavel pela venda
+- gerar a numeracao a partir do maior numero ja existente na rifa
 
 Exemplo:
 
-- participante João
+- participante Joao
 - quantidade comprada: 3 bilhetes
 - bilhetes gerados: 3
 
 ## RF007 - Controle de pagamento
 
-O sistema deve permitir informar o status do pagamento dos bilhetes.
+O sistema deve permitir alterar o status de pagamento dos bilhetes.
 
-Status possíveis:
+Status possiveis:
 
 - pendente
 - pago
 - cancelado
 
-## RF008 - Pesquisa de participantes
+A alteracao direta de status deve aceitar somente:
+
+- pago
+- cancelado
+
+## RF008 - Cancelamento de bilhetes
+
+O sistema deve permitir cancelar um bilhete.
+
+Bilhetes cancelados devem ser preservados para historico e nao devem participar do sorteio.
+
+## RF009 - Pesquisa de participantes
 
 O sistema deve permitir pesquisar participantes por:
 
 - nome
 - telefone
-- número do bilhete
+- numero do bilhete
 - status do pagamento
 
-## RF009 - Consulta de bilhetes
+## RF010 - Consulta de bilhetes
 
 O sistema deve permitir consultar:
 
-- bilhetes gerados
-- bilhetes pagos
-- bilhetes pendentes
-- bilhetes cancelados
+- bilhete por id
+- bilhetes de uma rifa
+- bilhetes por status
+- bilhetes por status filtrando opcionalmente por rifa
 
-## RF010 - Sorteio
+## RF011 - Sorteio
 
 O sistema deve permitir realizar sorteios utilizando apenas bilhetes pagos.
 
-# Requisitos Não Funcionais
+O retorno do sorteio deve informar os dados da rifa, do bilhete sorteado e do participante vencedor.
 
-## RNF001 - Segurança
+# Requisitos Nao Funcionais
 
-As rotas privadas devem exigir autenticação.
+## RNF001 - Seguranca
 
-## RNF002 - Responsividade
+As rotas privadas devem exigir autenticacao.
 
-O sistema deve funcionar em dispositivos móveis e desktop.
+Rotas administrativas devem exigir perfil de administrador.
 
-## RNF003 - Performance
+## RNF002 - Autorizacao
 
-As consultas principais devem possuir tempo de resposta inferior a 2 segundos.
+Apenas administradores ativos podem gerenciar usuarios.
 
-## RNF004 - Persistência
+## RNF003 - Persistencia
 
 Os dados devem ser armazenados em banco relacional.
 
-## RNF005 - Auditoria básica
+## RNF004 - Auditoria basica
 
-O sistema deve registrar qual usuário realizou operações importantes.
+O sistema deve registrar informacoes basicas de auditoria quando aplicavel.
 
 Exemplo:
 
-- cadastro de participante
-- alteração de pagamento
-- criação de rifa
+- usuario responsavel pela venda de bilhetes
+- data de criacao do bilhete
+- data de pagamento do bilhete
+- data de cancelamento do bilhete
 
-# Regras de Negócio
+## RNF005 - Resiliencia
+
+As operacoes assincronas da API devem propagar `CancellationToken` para permitir cancelamento de requisicoes.
+
+Cancelamentos de requisicao nao devem ser tratados como erro interno do servidor.
+
+## RNF006 - Limitacao de requisicoes
+
+A API deve aplicar rate limit global particionado por usuario autenticado ou, para acessos anonimos, por IP.
+
+Quando o limite for excedido, a API deve retornar HTTP 429.
+
+# Regras de Negocio
 
 ## RN001 - Sorteio apenas com bilhetes pagos
 
 Somente bilhetes com pagamento confirmado podem participar do sorteio.
 
-## RN002 - Usuário inativo
+## RN002 - Usuario inativo
 
-Usuários inativos não podem acessar o sistema.
+Usuarios inativos nao podem acessar o sistema.
 
-## RN003 - Permissão administrativa
+## RN003 - Permissao administrativa
 
-Apenas administradores podem gerenciar usuários.
+Apenas administradores ativos podem gerenciar usuarios.
 
 ## RN004 - Cancelamento de bilhete
 
-Bilhetes cancelados não devem participar do sorteio.
+Bilhetes cancelados nao devem participar do sorteio.
 
-## RN005 - Criação aberta de bilhetes
+## RN005 - Criacao aberta de bilhetes
 
-A rifa não deve possuir limite máximo de bilhetes.
+A rifa nao deve possuir limite maximo de bilhetes.
 
 Enquanto a rifa estiver aberta, novas compras devem gerar novos bilhetes.
+
+## RN006 - Rifa encerrada
+
+Uma rifa encerrada nao deve permitir:
+
+- novas compras
+- cadastro de novos participantes vinculados a ela
+- alteracao de bilhetes

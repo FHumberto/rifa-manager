@@ -1,3 +1,4 @@
+using System.Reflection;
 using RifaManager.Domain.Abstractions;
 using RifaManager.Domain.Entities;
 using RifaManager.Domain.Enums;
@@ -88,6 +89,7 @@ public sealed class BilheteTests
 
         bilhete.Status.ShouldBe(StatusPagamento.Pago);
         bilhete.PagoEm.ShouldNotBe(default);
+        bilhete.CanceladoEm.ShouldBe(default);
     }
 
     [Fact(DisplayName = "Deve marcar bilhete como cancelado pela rifa")]
@@ -99,6 +101,7 @@ public sealed class BilheteTests
         rifa.MarcarBilheteComoCancelado(bilhete);
 
         bilhete.Status.ShouldBe(StatusPagamento.Cancelado);
+        bilhete.PagoEm.ShouldBe(default);
         bilhete.CanceladoEm.ShouldNotBe(default);
     }
 
@@ -126,5 +129,23 @@ public sealed class BilheteTests
             rifa.MarcarBilheteComoCancelado(bilhete));
 
         exception.Error.ShouldBe(BilheteErrors.PagoNaoPodeSerCancelado);
+    }
+
+    [Fact(DisplayName = "Nao deve validar bilhete pago e cancelado ao mesmo tempo")]
+    public void Nao_deve_validar_bilhete_pago_e_cancelado_ao_mesmo_tempo()
+    {
+        Bilhete bilhete = CriarBilhete(CriarRifa());
+        SetProperty(bilhete, nameof(Bilhete.PagoEm), DateTime.UtcNow);
+        SetProperty(bilhete, nameof(Bilhete.CanceladoEm), DateTime.UtcNow);
+
+        DomainException exception = Should.Throw<DomainException>(bilhete.IsValid);
+
+        exception.Error.ShouldBe(BilheteErrors.PagoECancelado);
+    }
+
+    private static void SetProperty<TValue>(Bilhete bilhete, string propertyName, TValue value)
+    {
+        PropertyInfo property = typeof(Bilhete).GetProperty(propertyName)!;
+        property.SetValue(bilhete, value);
     }
 }

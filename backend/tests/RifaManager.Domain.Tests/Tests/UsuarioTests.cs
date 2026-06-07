@@ -39,6 +39,42 @@ public sealed class UsuarioTests
         exception.Error.ShouldBe(UsuarioErrors.EmailObrigatorio);
     }
 
+    [Fact(DisplayName = "Nao deve criar usuario sem senha")]
+    public void Nao_deve_criar_usuario_sem_senha()
+    {
+        DomainException exception = Should.Throw<DomainException>(() =>
+            new Usuario("Admin", "admin@rifa.com", string.Empty, PerfilUsuario.Administrador, true));
+
+        exception.Error.ShouldBe(UsuarioErrors.SenhaObrigatoria);
+    }
+
+    [Fact(DisplayName = "Nao deve criar usuario com nome muito longo")]
+    public void Nao_deve_criar_usuario_com_nome_muito_longo()
+    {
+        DomainException exception = Should.Throw<DomainException>(() =>
+            new Usuario(new string('A', 101), "admin@rifa.com", "senha-hash", PerfilUsuario.Administrador, true));
+
+        exception.Error.ShouldBe(UsuarioErrors.NomeMuitoLongo);
+    }
+
+    [Fact(DisplayName = "Nao deve criar usuario com email muito longo")]
+    public void Nao_deve_criar_usuario_com_email_muito_longo()
+    {
+        DomainException exception = Should.Throw<DomainException>(() =>
+            new Usuario("Admin", $"{new string('a', 92)}@rifa.com", "senha-hash", PerfilUsuario.Administrador, true));
+
+        exception.Error.ShouldBe(UsuarioErrors.EmailMuitoLongo);
+    }
+
+    [Fact(DisplayName = "Nao deve criar usuario com senha muito longa")]
+    public void Nao_deve_criar_usuario_com_senha_muito_longa()
+    {
+        DomainException exception = Should.Throw<DomainException>(() =>
+            new Usuario("Admin", "admin@rifa.com", new string('A', 201), PerfilUsuario.Administrador, true));
+
+        exception.Error.ShouldBe(UsuarioErrors.SenhaMuitoLonga);
+    }
+
     [Fact(DisplayName = "Nao deve criar usuario com perfil invalido")]
     public void Nao_deve_criar_usuario_com_perfil_invalido()
     {
@@ -69,6 +105,28 @@ public sealed class UsuarioTests
             usuario.Atualizar(string.Empty, "admin@rifa.com", PerfilUsuario.Administrador));
 
         exception.Error.ShouldBe(UsuarioErrors.NomeObrigatorio);
+    }
+
+    [Fact(DisplayName = "Nao deve atualizar usuario com email invalido")]
+    public void Nao_deve_atualizar_usuario_com_email_invalido()
+    {
+        Usuario usuario = new("Admin", "admin@rifa.com", "senha-hash", PerfilUsuario.Administrador, true);
+
+        DomainException exception = Should.Throw<DomainException>(() =>
+            usuario.Atualizar("Admin", string.Empty, PerfilUsuario.Administrador));
+
+        exception.Error.ShouldBe(UsuarioErrors.EmailObrigatorio);
+    }
+
+    [Fact(DisplayName = "Nao deve atualizar usuario com perfil invalido")]
+    public void Nao_deve_atualizar_usuario_com_perfil_invalido()
+    {
+        Usuario usuario = new("Admin", "admin@rifa.com", "senha-hash", PerfilUsuario.Administrador, true);
+
+        DomainException exception = Should.Throw<DomainException>(() =>
+            usuario.Atualizar("Admin", "admin@rifa.com", (PerfilUsuario)999));
+
+        exception.Error.ShouldBe(UsuarioErrors.PerfilInvalido);
     }
 
     [Fact(DisplayName = "Deve ativar usuario")]
