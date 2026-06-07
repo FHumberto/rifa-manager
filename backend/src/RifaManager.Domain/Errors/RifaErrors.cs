@@ -1,4 +1,4 @@
-using RifaManager.Domain.Abstractions;
+using RifaManager.Domain.Abstractions.Types;
 
 namespace RifaManager.Domain.Errors;
 

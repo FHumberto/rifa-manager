@@ -1,5 +1,4 @@
 using Asp.Versioning;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RifaManager.Application.UseCases.Participantes.CadastrarParticipante;
 using RifaManager.Application.UseCases.Participantes.EditarParticipante;
@@ -9,7 +8,6 @@ using RifaManager.Application.UseCases.Participantes.PesquisarParticipantes;
 
 namespace RifaManager.Api.Controllers.v1;
 
-[Authorize]
 [ApiVersion(1)]
 public sealed class ParticipantesController : BaseController
 {

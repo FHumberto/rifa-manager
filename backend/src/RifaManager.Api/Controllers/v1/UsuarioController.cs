@@ -10,8 +10,8 @@ using RifaManager.Domain.Enums;
 
 namespace RifaManager.Api.Controllers.v1;
 
-[ApiVersion(1)]
 [Authorize(Roles = nameof(PerfilUsuario.Administrador))]
+[ApiVersion(1)]
 public sealed class UsuarioController : BaseController
 {
     [HttpGet("{id:guid}")]

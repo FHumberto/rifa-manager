@@ -1,5 +1,4 @@
 using Asp.Versioning;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RifaManager.Application.UseCases.Bilhetes.AlterarStatusBilhete;
 using RifaManager.Application.UseCases.Bilhetes.CancelarBilhete;
@@ -11,7 +10,6 @@ using RifaManager.Domain.Enums;
 
 namespace RifaManager.Api.Controllers.v1;
 
-[Authorize]
 [ApiVersion(1)]
 public sealed class BilhetesController : BaseController
 {

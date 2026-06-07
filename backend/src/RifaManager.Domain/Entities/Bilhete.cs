@@ -1,4 +1,5 @@
-﻿using RifaManager.Domain.Abstractions;
+using RifaManager.Domain.Abstractions;
+using RifaManager.Domain.Abstractions.Types;
 using RifaManager.Domain.Enums;
 using RifaManager.Domain.Errors;
 

@@ -1,4 +1,4 @@
-namespace RifaManager.Domain.Abstractions;
+namespace RifaManager.Domain.Abstractions.Types;
 
 public sealed class Error
 {

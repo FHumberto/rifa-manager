@@ -1,5 +1,4 @@
 using Asp.Versioning;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RifaManager.Application.UseCases.Rifas.CadastrarRifa;
 using RifaManager.Application.UseCases.Rifas.EditarRifa;
@@ -10,7 +9,6 @@ using RifaManager.Application.UseCases.Rifas.SortearRifa;
 
 namespace RifaManager.Api.Controllers.v1;
 
-[Authorize]
 [ApiVersion(1)]
 public sealed class RifasController : BaseController
 {
