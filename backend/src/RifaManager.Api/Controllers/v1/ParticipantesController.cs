@@ -1,5 +1,4 @@
 using Asp.Versioning;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RifaManager.Application.UseCases.Participantes.CadastrarParticipante;
 using RifaManager.Application.UseCases.Participantes.EditarParticipante;
@@ -10,17 +9,18 @@ using RifaManager.Application.UseCases.Participantes.PesquisarParticipantes;
 namespace RifaManager.Api.Controllers.v1;
 
 [ApiVersion(1)]
-[Authorize]
 public sealed class ParticipantesController : BaseController
 {
+    #region [ LEITURA ]
+
     [HttpGet("{id:guid}")]
     [EndpointSummary("Obter participante por id")]
     [ProducesResponseType(typeof(GetParticipanteByIdResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> ObterPorId([FromServices] IGetParticipanteByIdUseCase useCase, [FromRoute] Guid id)
+    public async Task<IActionResult> ObterPorId([FromServices] IGetParticipanteByIdUseCase useCase, [FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        GetParticipanteByIdResponse response = await useCase.Execute(id);
+        GetParticipanteByIdResponse response = await useCase.Execute(id, cancellationToken);
 
         return Ok(response);
     }
@@ -30,9 +30,9 @@ public sealed class ParticipantesController : BaseController
     [ProducesResponseType(typeof(IReadOnlyList<ListarParticipantesPorRifaResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> ListarPorRifa([FromServices] IListarParticipantesPorRifaUseCase useCase, [FromRoute] Guid rifaId)
+    public async Task<IActionResult> ListarPorRifa([FromServices] IListarParticipantesPorRifaUseCase useCase, [FromRoute] Guid rifaId, CancellationToken cancellationToken)
     {
-        IReadOnlyList<ListarParticipantesPorRifaResponse> response = await useCase.Execute(rifaId);
+        IReadOnlyList<ListarParticipantesPorRifaResponse> response = await useCase.Execute(rifaId, cancellationToken);
 
         return Ok(response);
     }
@@ -42,12 +42,16 @@ public sealed class ParticipantesController : BaseController
     [ProducesResponseType(typeof(IReadOnlyList<PesquisarParticipantesResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> Pesquisar([FromServices] IPesquisarParticipantesUseCase useCase, [FromQuery] PesquisarParticipantesRequest request)
+    public async Task<IActionResult> Pesquisar([FromServices] IPesquisarParticipantesUseCase useCase, [FromQuery] PesquisarParticipantesRequest request, CancellationToken cancellationToken)
     {
-        IReadOnlyList<PesquisarParticipantesResponse> response = await useCase.Execute(request);
+        IReadOnlyList<PesquisarParticipantesResponse> response = await useCase.Execute(request, cancellationToken);
 
         return Ok(response);
     }
+
+    #endregion
+
+    #region [ ESCRITA ]
 
     [HttpPost]
     [EndpointSummary("Cadastrar participante")]
@@ -55,9 +59,9 @@ public sealed class ParticipantesController : BaseController
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Cadastrar([FromServices] ICadastrarParticipanteUseCase useCase, [FromBody] CadastrarParticipanteRequest request)
+    public async Task<IActionResult> Cadastrar([FromServices] ICadastrarParticipanteUseCase useCase, [FromBody] CadastrarParticipanteRequest request, CancellationToken cancellationToken)
     {
-        CadastrarParticipanteResponse response = await useCase.Execute(request);
+        CadastrarParticipanteResponse response = await useCase.Execute(request, cancellationToken);
 
         return CreatedAtAction(nameof(ObterPorId), new { id = response.Id }, response);
     }
@@ -68,10 +72,12 @@ public sealed class ParticipantesController : BaseController
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Editar([FromServices] IEditarParticipanteUseCase useCase, [FromRoute] Guid id, [FromBody] EditarParticipanteRequest request)
+    public async Task<IActionResult> Editar([FromServices] IEditarParticipanteUseCase useCase, [FromRoute] Guid id, [FromBody] EditarParticipanteRequest request, CancellationToken cancellationToken)
     {
-        await useCase.Execute(id, request);
+        await useCase.Execute(id, request, cancellationToken);
 
         return NoContent();
     }
+
+    #endregion
 }

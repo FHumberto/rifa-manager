@@ -1,0 +1,23 @@
+using RifaManager.Application.Exceptions;
+using RifaManager.Domain.Entities;
+using RifaManager.Domain.Errors;
+using RifaManager.Domain.Persistence;
+using RifaManager.Domain.Persistence.Repositories;
+
+namespace RifaManager.Application.UseCases.Bilhetes.CancelarBilhete;
+
+public sealed class CancelarBilheteHandler(IRifaRepository rifaRepository, IUnitOfWork unitOfWork) : ICancelarBilheteUseCase
+{
+    public async Task Execute(Guid id, CancellationToken cancellationToken)
+    {
+        Rifa rifa = await rifaRepository.GetByBilheteIdWithBilhetesAsync(id, cancellationToken)
+            ?? throw new NotFoundException(BilheteErrors.BilheteNaoEncontrado.Description);
+
+        Bilhete bilhete = rifa.Bilhetes.First(bilhete => bilhete.Id == id);
+
+        rifa.MarcarBilheteComoCancelado(bilhete);
+
+        await rifaRepository.UpdateAsync(rifa);
+        await unitOfWork.CommitAsync(cancellationToken);
+    }
+}

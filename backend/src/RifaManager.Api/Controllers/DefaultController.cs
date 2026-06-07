@@ -1,8 +1,10 @@
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace RifaManager.Api.Controllers;
 
+[AllowAnonymous]
 [ApiVersionNeutral]
 [Route("/")]
 [Tags("A P I")]
@@ -10,7 +12,7 @@ public class DefaultController : BaseController
 {
     [HttpGet]
     [EndpointSummary("Checagem")]
-    [EndpointDescription("Verifica se a API est· funcional.")]
+    [EndpointDescription("Verifica se a API est√° funcional.")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     public async Task<IActionResult> Check() => Ok("API OK!");
 }

@@ -2,21 +2,21 @@ using RifaManager.Application.Exceptions;
 using RifaManager.Domain.Entities;
 using RifaManager.Domain.Enums;
 using RifaManager.Domain.Errors;
-using RifaManager.Domain.Persistence;
+using RifaManager.Domain.Persistence.Repositories;
 
 namespace RifaManager.Application.UseCases.Bilhetes.ListarPorStatus;
 
 public sealed class ListarBilhetesPorStatusHandler(IBilheteRepository bilheteRepository, IRifaRepository rifaRepository) : IListarBilhetesPorStatusUseCase
 {
-    public async Task<IReadOnlyList<ListarBilhetesPorStatusResponse>> Execute(StatusPagamento status, Guid? rifaId)
+    public async Task<IReadOnlyList<ListarBilhetesPorStatusResponse>> Execute(StatusPagamento status, Guid? rifaId, CancellationToken cancellationToken)
     {
         if (!Enum.IsDefined(status))
             throw new BadRequestException("Status de pagamento invalido.");
 
-        if (rifaId.HasValue && await rifaRepository.GetByIdAsync(rifaId.Value) is null)
+        if (rifaId.HasValue && await rifaRepository.GetByIdAsync(rifaId.Value, cancellationToken) is null)
             throw new NotFoundException(RifaErrors.RifaNaoEncontrada.Description);
 
-        IReadOnlyList<Bilhete> bilhetes = await bilheteRepository.GetByStatusAsync(status, rifaId);
+        IReadOnlyList<Bilhete> bilhetes = await bilheteRepository.GetByStatusAsync(status, rifaId, cancellationToken);
 
         return bilhetes
             .Select(bilhete => new ListarBilhetesPorStatusResponse

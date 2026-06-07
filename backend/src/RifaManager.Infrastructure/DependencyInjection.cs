@@ -2,10 +2,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RifaManager.Domain.Persistence;
+using RifaManager.Domain.Persistence.Repositories;
 using RifaManager.Domain.Security.Cryptography;
 using RifaManager.Domain.Security.Tokens;
-using RifaManager.Infrastructure.Context;
 using RifaManager.Infrastructure.Persistence;
+using RifaManager.Infrastructure.Persistence.Context;
+using RifaManager.Infrastructure.Persistence.Repositories;
 using RifaManager.Infrastructure.Security.Cryptography;
 using RifaManager.Infrastructure.Security.Tokens;
 

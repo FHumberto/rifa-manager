@@ -1,7 +1,4 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using Asp.Versioning;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RifaManager.Application.UseCases.Bilhetes.AlterarStatusBilhete;
 using RifaManager.Application.UseCases.Bilhetes.CancelarBilhete;
@@ -14,17 +11,18 @@ using RifaManager.Domain.Enums;
 namespace RifaManager.Api.Controllers.v1;
 
 [ApiVersion(1)]
-[Authorize]
 public sealed class BilhetesController : BaseController
 {
+    #region [ LEITURA ]
+
     [HttpGet("{id:guid}")]
     [EndpointSummary("Obter bilhete por id")]
     [ProducesResponseType(typeof(GetBilheteByIdResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> ObterPorId([FromServices] IGetBilheteByIdUseCase useCase, [FromRoute] Guid id)
+    public async Task<IActionResult> ObterPorId([FromServices] IGetBilheteByIdUseCase useCase, [FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        GetBilheteByIdResponse response = await useCase.Execute(id);
+        GetBilheteByIdResponse response = await useCase.Execute(id, cancellationToken);
 
         return Ok(response);
     }
@@ -34,9 +32,9 @@ public sealed class BilhetesController : BaseController
     [ProducesResponseType(typeof(IReadOnlyList<ListarBilhetesPorRifaResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> ListarPorRifa([FromServices] IListarBilhetesPorRifaUseCase useCase, [FromRoute] Guid rifaId)
+    public async Task<IActionResult> ListarPorRifa([FromServices] IListarBilhetesPorRifaUseCase useCase, [FromRoute] Guid rifaId, CancellationToken cancellationToken)
     {
-        IReadOnlyList<ListarBilhetesPorRifaResponse> response = await useCase.Execute(rifaId);
+        IReadOnlyList<ListarBilhetesPorRifaResponse> response = await useCase.Execute(rifaId, cancellationToken);
 
         return Ok(response);
     }
@@ -47,12 +45,16 @@ public sealed class BilhetesController : BaseController
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> ListarPorStatus([FromServices] IListarBilhetesPorStatusUseCase useCase, [FromRoute] StatusPagamento status, [FromQuery] Guid? rifaId)
+    public async Task<IActionResult> ListarPorStatus([FromServices] IListarBilhetesPorStatusUseCase useCase, [FromRoute] StatusPagamento status, [FromQuery] Guid? rifaId, CancellationToken cancellationToken)
     {
-        IReadOnlyList<ListarBilhetesPorStatusResponse> response = await useCase.Execute(status, rifaId);
+        IReadOnlyList<ListarBilhetesPorStatusResponse> response = await useCase.Execute(status, rifaId, cancellationToken);
 
         return Ok(response);
     }
+
+    #endregion
+
+    #region [ ESCRITA ]
 
     [HttpPost("compras")]
     [EndpointSummary("Registrar compra de bilhetes")]
@@ -60,10 +62,10 @@ public sealed class BilhetesController : BaseController
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> RegistrarCompra([FromServices] IRegistrarCompraBilhetesUseCase useCase, [FromBody] RegistrarCompraBilhetesRequest request)
+    public async Task<IActionResult> RegistrarCompra([FromServices] IRegistrarCompraBilhetesUseCase useCase, [FromBody] RegistrarCompraBilhetesRequest request, CancellationToken cancellationToken)
     {
         Guid usuarioResponsavelId = GetUsuarioAutenticadoId();
-        RegistrarCompraBilhetesResponse response = await useCase.Execute(usuarioResponsavelId, request);
+        RegistrarCompraBilhetesResponse response = await useCase.Execute(usuarioResponsavelId, request, cancellationToken);
 
         return Created(string.Empty, response);
     }
@@ -74,9 +76,9 @@ public sealed class BilhetesController : BaseController
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> AlterarStatus([FromServices] IAlterarStatusBilheteUseCase useCase, [FromRoute] Guid id, [FromBody] AlterarStatusBilheteRequest request)
+    public async Task<IActionResult> AlterarStatus([FromServices] IAlterarStatusBilheteUseCase useCase, [FromRoute] Guid id, [FromBody] AlterarStatusBilheteRequest request, CancellationToken cancellationToken)
     {
-        await useCase.Execute(id, request);
+        await useCase.Execute(id, request, cancellationToken);
 
         return NoContent();
     }
@@ -87,18 +89,12 @@ public sealed class BilhetesController : BaseController
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Cancelar([FromServices] ICancelarBilheteUseCase useCase, [FromRoute] Guid id)
+    public async Task<IActionResult> Cancelar([FromServices] ICancelarBilheteUseCase useCase, [FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        await useCase.Execute(id);
+        await useCase.Execute(id, cancellationToken);
 
         return NoContent();
     }
 
-    private Guid GetUsuarioAutenticadoId()
-    {
-        string? usuarioId = User.FindFirstValue(JwtRegisteredClaimNames.Sub)
-            ?? User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        return Guid.Parse(usuarioId!);
-    }
+    #endregion
 }

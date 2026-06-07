@@ -15,9 +15,9 @@ public sealed class AuthController : BaseController
     [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> Login([FromServices] ILoginUseCase useCase, [FromBody] LoginRequest request)
+    public async Task<IActionResult> Login([FromServices] ILoginUseCase useCase, [FromBody] LoginRequest request, CancellationToken cancellationToken)
     {
-        LoginResponse result = await useCase.Execute(request);
+        LoginResponse result = await useCase.Execute(request, cancellationToken);
         return Ok(result);
     }
 }

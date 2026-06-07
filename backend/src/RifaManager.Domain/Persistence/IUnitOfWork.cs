@@ -2,5 +2,5 @@ namespace RifaManager.Domain.Persistence;
 
 public interface IUnitOfWork
 {
-    Task CommitAsync();
+    Task CommitAsync(CancellationToken cancellationToken);
 }

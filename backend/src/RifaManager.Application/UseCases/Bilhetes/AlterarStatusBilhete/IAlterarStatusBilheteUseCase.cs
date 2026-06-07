@@ -1,6 +1,8 @@
+using RifaManager.Application.Abstractions.Markers;
+
 namespace RifaManager.Application.UseCases.Bilhetes.AlterarStatusBilhete;
 
-public interface IAlterarStatusBilheteUseCase
+public interface IAlterarStatusBilheteUseCase : IUseCase
 {
-    Task Execute(Guid id, AlterarStatusBilheteRequest request);
+    Task Execute(Guid id, AlterarStatusBilheteRequest request, CancellationToken cancellationToken);
 }
