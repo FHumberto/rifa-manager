@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Options;
 using RifaManager.Web.Services.Auth;
 using RifaManager.Web.Services.Http;
+using RifaManager.Web.Services.Rifas;
 using RifaManager.Web.Services.Usuarios;
 
 namespace RifaManager.Web.Extensions;
@@ -16,6 +17,7 @@ public static class ServiceCollectionExtensions
             return new HttpClient { BaseAddress = new Uri(options.BaseUrl) };
         });
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IRifaService, RifaService>();
         services.AddScoped<IUsuarioService, UsuarioService>();
 
         return services;

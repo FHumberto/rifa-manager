@@ -1,7 +1,138 @@
 @page "/rifas/cadastrar"
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+@inject RifaManager.Web.Services.Rifas.IRifaService RifaService
+@inject RifaManager.Web.State.AuthState AuthState
 
 <PageTitle>Cadastrar rifa</PageTitle>
 
 <PageTitleText Title="Cadastrar rifa" Subtitle="Informe os dados básicos da nova rifa." />
 
-<EmptyState Title="Formulário em preparação" Message="A integração com a API será conectada na próxima etapa." />
+<MudPaper Class="pa-4" Elevation="0" Outlined="true">
+    <EditForm Model="@_model" OnValidSubmit="@HandleSubmitAsync">
+        <DataAnnotationsValidator />
+
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <MudTextField T="string"
+                              Label="Nome"
+                              Variant="Variant.Outlined"
+                              For="@(() => _model.Nome)"
+                              @bind-Value="_model.Nome"
+                              Disabled="@_isSubmitting" />
+            </MudItem>
+
+            <MudItem xs="12" md="6">
+                <MudTextField T="string"
+                              Label="Prêmio"
+                              Variant="Variant.Outlined"
+                              For="@(() => _model.Premio)"
+                              @bind-Value="_model.Premio"
+                              Disabled="@_isSubmitting" />
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudTextField T="string"
+                              Label="Descrição"
+                              Variant="Variant.Outlined"
+                              Lines="4"
+                              For="@(() => _model.Descricao)"
+                              @bind-Value="_model.Descricao"
+                              Disabled="@_isSubmitting" />
+            </MudItem>
+
+            <MudItem xs="12" md="6">
+                <MudNumericField T="double?"
+                                 Label="Valor do bilhete"
+                                 Variant="Variant.Outlined"
+                                 Min="0.01"
+                                 Format="C2"
+                                 Culture="@_culture"
+                                 For="@(() => _model.ValorBilhete)"
+                                 @bind-Value="_model.ValorBilhete"
+                                 Disabled="@_isSubmitting" />
+            </MudItem>
+
+            <MudItem xs="12" md="6">
+                <MudDatePicker Label="Data do sorteio"
+                               Variant="Variant.Outlined"
+                               DateFormat="dd/MM/yyyy"
+                               Culture="@_culture"
+                               For="@(() => _model.DataSorteio)"
+                               @bind-Date="_model.DataSorteio"
+                               Disabled="@_isSubmitting" />
+            </MudItem>
+        </MudGrid>
+
+        @if (!string.IsNullOrWhiteSpace(_errorMessage))
+        {
+            <ErrorAlert Message="@_errorMessage" Class="mt-4" />
+        }
+
+        <div class="d-flex gap-3 mt-4">
+            <MudButton ButtonType="ButtonType.Submit"
+                       Color="Color.Primary"
+                       Variant="Variant.Filled"
+                       Disabled="@_isSubmitting">
+                @if (_isSubmitting)
+                {
+                    <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
+                    <span>Cadastrando...</span>
+                }
+                else
+                {
+                    <span>Cadastrar</span>
+                }
+            </MudButton>
+
+            <MudButton Variant="Variant.Text"
+                       Color="Color.Default"
+                       Href="/rifas"
+                       Disabled="@_isSubmitting">
+                Cancelar
+            </MudButton>
+        </div>
+    </EditForm>
+</MudPaper>
+
+@code {
+    private readonly System.Globalization.CultureInfo _culture = new("pt-BR");
+    private readonly CadastrarRifaRequest _model = new();
+    private bool _isSubmitting;
+    private string? _errorMessage;
+
+    private async Task HandleSubmitAsync()
+    {
+        if (string.IsNullOrWhiteSpace(AuthState.AccessToken))
+        {
+            Navigation.NavigateTo("/login", replace: true);
+            return;
+        }
+
+        _isSubmitting = true;
+        _errorMessage = null;
+
+        try
+        {
+            var result = await RifaService.CadastrarAsync(_model, AuthState.AccessToken);
+
+            if (result.Success && result.Data is not null)
+            {
+                Snackbar.Add("Rifa cadastrada com sucesso.", Severity.Success);
+                Navigation.NavigateTo("/rifas");
+                return;
+            }
+
+            _errorMessage = result.Error?.GetDisplayMessage("Não foi possível cadastrar a rifa.")
+                ?? "Não foi possível cadastrar a rifa.";
+        }
+        catch (HttpRequestException)
+        {
+            _errorMessage = "Não foi possível conectar à API. Verifique se o backend está disponível.";
+        }
+        finally
+        {
+            _isSubmitting = false;
+        }
+    }
+}
