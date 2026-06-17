@@ -23,4 +23,11 @@ public static class ApiRoutes
     {
         public const string Base = "api/v1/Bilhetes";
     }
+
+    public static class Usuario
+    {
+        public const string Base = "api/v1/Usuario";
+
+        public static string ById(Guid id) => $"{Base}/{id}";
+    }
 }

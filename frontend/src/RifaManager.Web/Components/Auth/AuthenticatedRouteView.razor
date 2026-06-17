@@ -1,0 +1,44 @@
+@inject NavigationManager Navigation
+@inject RifaManager.Web.State.AuthState AuthState
+
+@if (_canRender)
+{
+    <RouteView RouteData="@RouteData" DefaultLayout="@DefaultLayout" />
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public RouteData RouteData { get; set; } = default!;
+
+    [Parameter]
+    public Type? DefaultLayout { get; set; }
+
+    private bool _canRender;
+
+    protected override void OnParametersSet()
+    {
+        bool isPublicRoute = IsPublicRoute(RouteData.PageType);
+
+        if (!AuthState.IsAuthenticated && !isPublicRoute)
+        {
+            _canRender = false;
+            Navigation.NavigateTo("/login", replace: true);
+            return;
+        }
+
+        if (AuthState.IsAuthenticated && RouteData.PageType == typeof(RifaManager.Web.Pages.Login))
+        {
+            _canRender = false;
+            Navigation.NavigateTo("/", replace: true);
+            return;
+        }
+
+        _canRender = true;
+    }
+
+    private static bool IsPublicRoute(Type pageType)
+    {
+        return pageType == typeof(RifaManager.Web.Pages.Login)
+            || pageType.Namespace?.StartsWith("RifaManager.Web.Pages.Errors", StringComparison.Ordinal) == true;
+    }
+}
