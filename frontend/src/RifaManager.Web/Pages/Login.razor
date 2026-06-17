@@ -1,11 +1,119 @@
 @page "/login"
+@layout LoginLayout
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+@inject RifaManager.Web.Services.Auth.IAuthService AuthService
+@inject RifaManager.Web.Services.Usuarios.IUsuarioService UsuarioService
+@inject RifaManager.Web.State.AuthState AuthState
 
 <PageTitle>Entrar</PageTitle>
 
-<PageTitleText Title="Entrar" Subtitle="Acesse sua conta para gerenciar as rifas." />
+<MudPaper Class="pa-6" Elevation="0" Outlined="true" Style="width: min(420px, 100%);">
+    <div class="mb-6">
+        <h1 class="mud-typography mud-typography-h4 mb-2">Entrar</h1>
+        <MudText Typo="Typo.body1" Color="Color.Secondary">Acesse sua conta para gerenciar as rifas.</MudText>
+    </div>
 
-<MudPaper Class="pa-4" Elevation="0" Outlined="true" MaxWidth="420px">
-    <MudTextField T="string" Label="E-mail" InputType="InputType.Email" Variant="Variant.Outlined" />
-    <MudTextField T="string" Label="Senha" InputType="InputType.Password" Variant="Variant.Outlined" Class="mt-3" />
-    <MudButton Color="Color.Primary" Variant="Variant.Filled" Class="mt-4">Entrar</MudButton>
+    <EditForm Model="@_model" OnValidSubmit="@HandleLoginAsync">
+        <DataAnnotationsValidator />
+
+        <MudTextField T="string"
+                      Label="E-mail"
+                      InputType="InputType.Email"
+                      Variant="Variant.Outlined"
+                      For="@(() => _model.Email)"
+                      @bind-Value="_model.Email"
+                      Disabled="@_isSubmitting" />
+
+        <MudTextField T="string"
+                      Label="Senha"
+                      InputType="InputType.Password"
+                      Variant="Variant.Outlined"
+                      Class="mt-3"
+                      For="@(() => _model.Senha)"
+                      @bind-Value="_model.Senha"
+                      Disabled="@_isSubmitting" />
+
+        @if (!string.IsNullOrWhiteSpace(_errorMessage))
+        {
+            <ErrorAlert Message="@_errorMessage" Class="mt-4" />
+        }
+
+        <MudButton ButtonType="ButtonType.Submit"
+                   Color="Color.Primary"
+                   Variant="Variant.Filled"
+                   Class="mt-4"
+                   Disabled="@_isSubmitting">
+            @if (_isSubmitting)
+            {
+                <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
+                <span>Entrando...</span>
+            }
+            else
+            {
+                <span>Entrar</span>
+            }
+        </MudButton>
+    </EditForm>
 </MudPaper>
+
+@code {
+    private readonly LoginRequest _model = new();
+    private bool _isSubmitting;
+    private string? _errorMessage;
+
+    private async Task HandleLoginAsync()
+    {
+        _isSubmitting = true;
+        _errorMessage = null;
+
+        try
+        {
+            var result = await AuthService.LoginAsync(_model);
+
+            if (result.Success && result.Data is not null)
+            {
+                Guid? userId = RifaManager.Web.Services.Auth.JwtTokenReader.GetUserId(result.Data.AccessToken);
+
+                if (userId is null)
+                {
+                    _errorMessage = "Não foi possível identificar o usuário autenticado.";
+                    return;
+                }
+
+                var usuarioResult = await UsuarioService.GetByIdAsync(userId.Value, result.Data.AccessToken);
+
+                if (!usuarioResult.Success || usuarioResult.Data is null)
+                {
+                    _errorMessage = usuarioResult.Error?.Detail
+                        ?? usuarioResult.Error?.Title
+                        ?? "Não foi possível carregar os dados do usuário.";
+                    return;
+                }
+
+                AuthState.SignIn(
+                    result.Data.AccessToken,
+                    usuarioResult.Data.Id,
+                    usuarioResult.Data.Nome,
+                    usuarioResult.Data.Email,
+                    usuarioResult.Data.Perfil);
+
+                Snackbar.Add("Login realizado com sucesso.", Severity.Success);
+                Navigation.NavigateTo("/");
+                return;
+            }
+
+            _errorMessage = result.Error?.Detail
+                ?? result.Error?.Title
+                ?? "E-mail ou senha inválidos.";
+        }
+        catch (HttpRequestException)
+        {
+            _errorMessage = "Não foi possível conectar à API. Verifique se o backend está disponível.";
+        }
+        finally
+        {
+            _isSubmitting = false;
+        }
+    }
+}
