@@ -1,0 +1,12 @@
+@page "/rifas/detalhes/{Id:guid}"
+
+<PageTitle>Detalhes da rifa</PageTitle>
+
+<PageTitleText Title="Detalhes da rifa" Subtitle="Visualize informações, participantes e bilhetes da rifa." />
+
+<EmptyState Title="Detalhes em preparação" Message="A integração com a API será conectada na próxima etapa." />
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+}

@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+    <File Path="docs/Arquitetura.md.md" />
+  </Folder>
+  <Folder Name="/Source/">
+    <Project Path="src/RifaManager.Web/RifaManager.Web.csproj" Id="79592a73-cace-4cec-ae40-d96c09196c47" />
+  </Folder>
+</Solution>

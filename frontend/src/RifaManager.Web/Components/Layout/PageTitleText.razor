@@ -1,0 +1,16 @@
+<div class="mb-6">
+    <h1 class="mud-typography mud-typography-h4 mb-2">@Title</h1>
+
+    @if (!string.IsNullOrWhiteSpace(Subtitle))
+    {
+        <MudText Typo="Typo.body1" Color="Color.Secondary">@Subtitle</MudText>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public string Title { get; set; } = string.Empty;
+
+    [Parameter]
+    public string? Subtitle { get; set; }
+}
