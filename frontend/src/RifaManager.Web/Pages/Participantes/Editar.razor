@@ -1,0 +1,12 @@
+@page "/participantes/editar/{Id:guid}"
+
+<PageTitle>Editar participante</PageTitle>
+
+<PageTitleText Title="Editar participante" Subtitle="Atualize os dados do participante selecionado." />
+
+<EmptyState Title="Formulário em preparação" Message="A integração com a API será conectada na próxima etapa." />
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+}

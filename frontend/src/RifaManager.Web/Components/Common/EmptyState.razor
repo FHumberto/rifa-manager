@@ -1,0 +1,16 @@
+<MudPaper Class="pa-6 text-center" Elevation="0" Outlined="true">
+    <MudIcon Icon="@Icon" Size="Size.Large" Color="Color.Default" Class="mb-2" />
+    <MudText Typo="Typo.h6">@Title</MudText>
+    <MudText Typo="Typo.body2" Color="Color.Secondary">@Message</MudText>
+</MudPaper>
+
+@code {
+    [Parameter]
+    public string Icon { get; set; } = Icons.Material.Filled.Inbox;
+
+    [Parameter]
+    public string Title { get; set; } = "Nenhum registro encontrado";
+
+    [Parameter]
+    public string Message { get; set; } = "Os dados aparecerão aqui quando estiverem disponíveis.";
+}

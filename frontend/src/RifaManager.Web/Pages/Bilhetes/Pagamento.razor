@@ -1,0 +1,12 @@
+@page "/bilhetes/pagamento/{Id:guid}"
+
+<PageTitle>Pagamento do bilhete</PageTitle>
+
+<PageTitleText Title="Pagamento do bilhete" Subtitle="Atualize o status de pagamento do bilhete selecionado." />
+
+<EmptyState Title="Pagamento em preparação" Message="A integração com a API será conectada na próxima etapa." />
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+}

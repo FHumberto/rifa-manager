@@ -1,0 +1,12 @@
+@page "/rifas/editar/{Id:guid}"
+
+<PageTitle>Editar rifa</PageTitle>
+
+<PageTitleText Title="Editar rifa" Subtitle="Atualize os dados da rifa selecionada." />
+
+<EmptyState Title="Formulário em preparação" Message="A integração com a API será conectada na próxima etapa." />
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+}
