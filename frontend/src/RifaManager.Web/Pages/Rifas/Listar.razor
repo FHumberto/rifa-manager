@@ -1,7 +1,207 @@
 @page "/rifas"
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+@inject RifaManager.Web.Services.Rifas.IRifaService RifaService
+@inject RifaManager.Web.State.AuthState AuthState
 
 <PageTitle>Rifas</PageTitle>
 
-<PageTitleText Title="Rifas" Subtitle="Consulte e gerencie as rifas cadastradas." />
+<div class="d-flex align-center mb-4">
+    <PageTitleText Title="Rifas" Subtitle="Consulte e gerencie as rifas cadastradas." />
+    <MudSpacer />
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Href="/rifas/cadastrar">
+        Nova rifa
+    </MudButton>
+</div>
 
-<EmptyState Title="Nenhuma rifa cadastrada" Message="Cadastre a primeira rifa para começar a vender bilhetes." />
+@if (_isLoading)
+{
+    <Loading Text="Carregando rifas..." />
+}
+else if (!string.IsNullOrWhiteSpace(_errorMessage))
+{
+    <ErrorAlert Message="@_errorMessage" />
+}
+else
+{
+    @if (_sorteioResult is not null)
+    {
+        <MudAlert Severity="Severity.Success" Variant="Variant.Outlined" Class="mb-4">
+            Bilhete sorteado: <strong>@_sorteioResult.NumeroBilhete</strong> -
+            @_sorteioResult.ParticipanteNome (@_sorteioResult.ParticipanteTelefone)
+        </MudAlert>
+    }
+
+    @if (_rifas.Count == 0)
+    {
+        <EmptyState Title="Nenhuma rifa cadastrada" Message="Cadastre a primeira rifa para começar a vender bilhetes." />
+    }
+    else
+    {
+        <MudTable Items="@_rifas" Hover="true" Dense="true" Elevation="0" Outlined="true">
+            <HeaderContent>
+                <MudTh>Nome</MudTh>
+                <MudTh>Prêmio</MudTh>
+                <MudTh>Valor do bilhete</MudTh>
+                <MudTh>Data do sorteio</MudTh>
+                <MudTh>Status</MudTh>
+                <MudTh Class="text-end">Ações</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Nome">@context.Nome</MudTd>
+                <MudTd DataLabel="Prêmio">@context.Premio</MudTd>
+                <MudTd DataLabel="Valor do bilhete">@context.ValorBilhete.ToString("C", _culture)</MudTd>
+                <MudTd DataLabel="Data do sorteio">@context.DataSorteio.ToString("dd/MM/yyyy")</MudTd>
+                <MudTd DataLabel="Status">
+                    <MudChip T="string" Size="Size.Small" Color="@(context.Encerrada ? Color.Default : Color.Success)">
+                        @(context.Encerrada ? "Encerrada" : "Ativa")
+                    </MudChip>
+                </MudTd>
+                <MudTd DataLabel="Ações" Class="text-end">
+                    <MudIconButton Icon="@Icons.Material.Filled.Visibility"
+                                   Color="Color.Default"
+                                   Href="@($"/rifas/detalhes/{context.Id}")"
+                                   Disabled="@IsProcessing(context.Id)" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                   Color="Color.Primary"
+                                   Disabled="@(context.Encerrada || IsProcessing(context.Id))"
+                                   Href="@($"/rifas/editar/{context.Id}")" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Casino"
+                                   Color="Color.Success"
+                                   Disabled="@(context.Encerrada || IsProcessing(context.Id))"
+                                   OnClick="@(() => SortearAsync(context.Id))" />
+                    <MudIconButton Icon="@Icons.Material.Filled.StopCircle"
+                                   Color="Color.Warning"
+                                   Disabled="@(context.Encerrada || IsProcessing(context.Id))"
+                                   OnClick="@(() => EncerrarAsync(context.Id))" />
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+    }
+}
+
+@code {
+    private readonly System.Globalization.CultureInfo _culture = new("pt-BR");
+    private IReadOnlyList<ListarRifasResponse> _rifas = [];
+    private bool _isLoading = true;
+    private Guid? _processingRifaId;
+    private string? _errorMessage;
+    private SortearRifaResponse? _sorteioResult;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadRifasAsync();
+    }
+
+    private async Task LoadRifasAsync()
+    {
+        if (string.IsNullOrWhiteSpace(AuthState.AccessToken))
+        {
+            Navigation.NavigateTo("/login", replace: true);
+            return;
+        }
+
+        try
+        {
+            _isLoading = true;
+            _errorMessage = null;
+
+            var result = await RifaService.ListarAsync(AuthState.AccessToken);
+
+            if (result.Success && result.Data is not null)
+            {
+                _rifas = result.Data;
+                return;
+            }
+
+            _errorMessage = result.Error?.GetDisplayMessage("Não foi possível carregar as rifas.")
+                ?? "Não foi possível carregar as rifas.";
+        }
+        catch (HttpRequestException)
+        {
+            _errorMessage = "Não foi possível conectar à API. Verifique se o backend está disponível.";
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private async Task EncerrarAsync(Guid rifaId)
+    {
+        if (string.IsNullOrWhiteSpace(AuthState.AccessToken))
+        {
+            Navigation.NavigateTo("/login", replace: true);
+            return;
+        }
+
+        _processingRifaId = rifaId;
+        _errorMessage = null;
+        _sorteioResult = null;
+
+        try
+        {
+            var result = await RifaService.EncerrarAsync(rifaId, AuthState.AccessToken);
+
+            if (result.Success)
+            {
+                Snackbar.Add("Rifa encerrada com sucesso.", Severity.Success);
+                await LoadRifasAsync();
+                return;
+            }
+
+            _errorMessage = result.Error?.GetDisplayMessage("Não foi possível encerrar a rifa.")
+                ?? "Não foi possível encerrar a rifa.";
+        }
+        catch (HttpRequestException)
+        {
+            _errorMessage = "Não foi possível conectar à API. Verifique se o backend está disponível.";
+        }
+        finally
+        {
+            _processingRifaId = null;
+        }
+    }
+
+    private async Task SortearAsync(Guid rifaId)
+    {
+        if (string.IsNullOrWhiteSpace(AuthState.AccessToken))
+        {
+            Navigation.NavigateTo("/login", replace: true);
+            return;
+        }
+
+        _processingRifaId = rifaId;
+        _errorMessage = null;
+        _sorteioResult = null;
+
+        try
+        {
+            var result = await RifaService.SortearAsync(rifaId, AuthState.AccessToken);
+
+            if (result.Success && result.Data is not null)
+            {
+                _sorteioResult = result.Data;
+                Snackbar.Add("Sorteio realizado com sucesso.", Severity.Success);
+                await LoadRifasAsync();
+                return;
+            }
+
+            _errorMessage = result.Error?.GetDisplayMessage("Não foi possível sortear a rifa.")
+                ?? "Não foi possível sortear a rifa.";
+        }
+        catch (HttpRequestException)
+        {
+            _errorMessage = "Não foi possível conectar à API. Verifique se o backend está disponível.";
+        }
+        finally
+        {
+            _processingRifaId = null;
+        }
+    }
+
+    private bool IsProcessing(Guid rifaId)
+    {
+        return _processingRifaId == rifaId;
+    }
+}

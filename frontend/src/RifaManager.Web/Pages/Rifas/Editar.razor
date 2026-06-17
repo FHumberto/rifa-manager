@@ -1,12 +1,195 @@
 @page "/rifas/editar/{Id:guid}"
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+@inject RifaManager.Web.Services.Rifas.IRifaService RifaService
+@inject RifaManager.Web.State.AuthState AuthState
 
 <PageTitle>Editar rifa</PageTitle>
 
 <PageTitleText Title="Editar rifa" Subtitle="Atualize os dados da rifa selecionada." />
 
-<EmptyState Title="Formulário em preparação" Message="A integração com a API será conectada na próxima etapa." />
+@if (_isLoading)
+{
+    <Loading Text="Carregando rifa..." />
+}
+else if (!string.IsNullOrWhiteSpace(_loadErrorMessage))
+{
+    <ErrorAlert Message="@_loadErrorMessage" />
+}
+else
+{
+    <MudPaper Class="pa-4" Elevation="0" Outlined="true">
+        <EditForm Model="@_model" OnValidSubmit="@HandleSubmitAsync">
+            <DataAnnotationsValidator />
+
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudTextField T="string"
+                                  Label="Nome"
+                                  Variant="Variant.Outlined"
+                                  For="@(() => _model.Nome)"
+                                  @bind-Value="_model.Nome"
+                                  Disabled="@_isSubmitting" />
+                </MudItem>
+
+                <MudItem xs="12" md="6">
+                    <MudTextField T="string"
+                                  Label="Prêmio"
+                                  Variant="Variant.Outlined"
+                                  For="@(() => _model.Premio)"
+                                  @bind-Value="_model.Premio"
+                                  Disabled="@_isSubmitting" />
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudTextField T="string"
+                                  Label="Descrição"
+                                  Variant="Variant.Outlined"
+                                  Lines="4"
+                                  For="@(() => _model.Descricao)"
+                                  @bind-Value="_model.Descricao"
+                                  Disabled="@_isSubmitting" />
+                </MudItem>
+
+                <MudItem xs="12" md="6">
+                    <MudNumericField T="double?"
+                                     Label="Valor do bilhete"
+                                     Variant="Variant.Outlined"
+                                     Min="0.01"
+                                     Format="C2"
+                                     Culture="@_culture"
+                                     For="@(() => _model.ValorBilhete)"
+                                     @bind-Value="_model.ValorBilhete"
+                                     Disabled="@_isSubmitting" />
+                </MudItem>
+
+                <MudItem xs="12" md="6">
+                    <MudDatePicker Label="Data do sorteio"
+                                   Variant="Variant.Outlined"
+                                   DateFormat="dd/MM/yyyy"
+                                   Culture="@_culture"
+                                   @bind-Date="DataSorteioPicker"
+                                   Disabled="@_isSubmitting" />
+                    <ValidationMessage For="@(() => _model.DataSorteio)" />
+                </MudItem>
+            </MudGrid>
+
+            @if (!string.IsNullOrWhiteSpace(_submitErrorMessage))
+            {
+                <ErrorAlert Message="@_submitErrorMessage" Class="mt-4" />
+            }
+
+            <div class="d-flex gap-3 mt-4">
+                <MudButton ButtonType="ButtonType.Submit"
+                           Color="Color.Primary"
+                           Variant="Variant.Filled"
+                           Disabled="@_isSubmitting">
+                    @if (_isSubmitting)
+                    {
+                        <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
+                        <span>Salvando...</span>
+                    }
+                    else
+                    {
+                        <span>Salvar</span>
+                    }
+                </MudButton>
+
+                <MudButton Variant="Variant.Text"
+                           Color="Color.Default"
+                           Href="/rifas"
+                           Disabled="@_isSubmitting">
+                    Cancelar
+                </MudButton>
+            </div>
+        </EditForm>
+    </MudPaper>
+}
 
 @code {
     [Parameter]
     public Guid Id { get; set; }
+
+    private readonly System.Globalization.CultureInfo _culture = new("pt-BR");
+    private readonly EditarRifaRequest _model = new();
+    private bool _isLoading = true;
+    private bool _isSubmitting;
+    private string? _loadErrorMessage;
+    private string? _submitErrorMessage;
+
+    private DateTime? DataSorteioPicker
+    {
+        get => _model.DataSorteio?.ToDateTime(TimeOnly.MinValue);
+        set => _model.DataSorteio = value.HasValue ? DateOnly.FromDateTime(value.Value) : null;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (string.IsNullOrWhiteSpace(AuthState.AccessToken))
+        {
+            Navigation.NavigateTo("/login", replace: true);
+            return;
+        }
+
+        try
+        {
+            var result = await RifaService.GetByIdAsync(Id, AuthState.AccessToken);
+
+            if (result.Success && result.Data is not null)
+            {
+                _model.Nome = result.Data.Nome;
+                _model.Descricao = result.Data.Descricao;
+                _model.ValorBilhete = result.Data.ValorBilhete;
+                _model.DataSorteio = result.Data.DataSorteio;
+                _model.Premio = result.Data.Premio;
+                return;
+            }
+
+            _loadErrorMessage = result.Error?.GetDisplayMessage("Não foi possível carregar a rifa.")
+                ?? "Não foi possível carregar a rifa.";
+        }
+        catch (HttpRequestException)
+        {
+            _loadErrorMessage = "Não foi possível conectar à API. Verifique se o backend está disponível.";
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private async Task HandleSubmitAsync()
+    {
+        if (string.IsNullOrWhiteSpace(AuthState.AccessToken))
+        {
+            Navigation.NavigateTo("/login", replace: true);
+            return;
+        }
+
+        _isSubmitting = true;
+        _submitErrorMessage = null;
+
+        try
+        {
+            var result = await RifaService.EditarAsync(Id, _model, AuthState.AccessToken);
+
+            if (result.Success)
+            {
+                Snackbar.Add("Rifa atualizada com sucesso.", Severity.Success);
+                Navigation.NavigateTo("/rifas");
+                return;
+            }
+
+            _submitErrorMessage = result.Error?.GetDisplayMessage("Não foi possível editar a rifa.")
+                ?? "Não foi possível editar a rifa.";
+        }
+        catch (HttpRequestException)
+        {
+            _submitErrorMessage = "Não foi possível conectar à API. Verifique se o backend está disponível.";
+        }
+        finally
+        {
+            _isSubmitting = false;
+        }
+    }
 }

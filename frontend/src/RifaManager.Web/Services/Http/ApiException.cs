@@ -1,8 +1,6 @@
 namespace RifaManager.Web.Services.Http;
 
-public sealed class ApiException : Exception
+public sealed class ApiException(string message, int? statusCode = null) : Exception(message)
 {
-    public ApiException(string message, int? statusCode = null) : base(message) => StatusCode = statusCode;
-
-    public int? StatusCode { get; }
+    public int? StatusCode { get; } = statusCode;
 }

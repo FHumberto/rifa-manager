@@ -116,6 +116,49 @@ public sealed class RifaService(HttpClient httpClient) : IRifaService
         return ApiResult<bool>.Fail(await ReadErrorAsync(response, "Não foi possível editar a rifa.", cancellationToken));
     }
 
+    public async Task<ApiResult<bool>> EncerrarAsync(
+        Guid id,
+        string accessToken,
+        CancellationToken cancellationToken = default)
+    {
+        using HttpRequestMessage httpRequest = CreateRequest(HttpMethod.Patch, ApiRoutes.Rifas.Encerrar(id), accessToken);
+        HttpResponseMessage response = await httpClient.SendAsync(httpRequest, cancellationToken);
+
+        if (response.IsSuccessStatusCode)
+        {
+            return ApiResult<bool>.Ok(true);
+        }
+
+        return ApiResult<bool>.Fail(await ReadErrorAsync(response, "Não foi possível encerrar a rifa.", cancellationToken));
+    }
+
+    public async Task<ApiResult<SortearRifaResponse>> SortearAsync(
+        Guid id,
+        string accessToken,
+        CancellationToken cancellationToken = default)
+    {
+        using HttpRequestMessage httpRequest = CreateRequest(HttpMethod.Post, ApiRoutes.Rifas.Sortear(id), accessToken);
+        HttpResponseMessage response = await httpClient.SendAsync(httpRequest, cancellationToken);
+
+        if (response.IsSuccessStatusCode)
+        {
+            SortearRifaResponse? sorteio = await response.Content.ReadFromJsonAsync<SortearRifaResponse>(cancellationToken);
+
+            if (sorteio is not null)
+            {
+                return ApiResult<SortearRifaResponse>.Ok(sorteio);
+            }
+
+            return ApiResult<SortearRifaResponse>.Fail(new ApiErrorResponse
+            {
+                Title = "Resposta inválida da API.",
+                Status = (int)response.StatusCode
+            });
+        }
+
+        return ApiResult<SortearRifaResponse>.Fail(await ReadErrorAsync(response, "Não foi possível sortear a rifa.", cancellationToken));
+    }
+
     private static HttpRequestMessage CreateRequest(HttpMethod method, string uri, string accessToken, object? body = null)
     {
         HttpRequestMessage request = new(method, uri);

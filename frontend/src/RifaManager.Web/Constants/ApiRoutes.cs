@@ -14,6 +14,10 @@ public static class ApiRoutes
         public const string Base = "api/v1/Rifas";
 
         public static string ById(Guid id) => $"{Base}/{id}";
+
+        public static string Encerrar(Guid id) => $"{ById(id)}/encerrar";
+
+        public static string Sortear(Guid id) => $"{ById(id)}/sortear";
     }
 
     public static class Participantes

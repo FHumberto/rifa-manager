@@ -9,4 +9,6 @@ public interface IRifaService
     Task<ApiResult<GetRifaByIdResponse>> GetByIdAsync(Guid id, string accessToken, CancellationToken cancellationToken = default);
     Task<ApiResult<CadastrarRifaResponse>> CadastrarAsync(CadastrarRifaRequest request, string accessToken, CancellationToken cancellationToken = default);
     Task<ApiResult<bool>> EditarAsync(Guid id, EditarRifaRequest request, string accessToken, CancellationToken cancellationToken = default);
+    Task<ApiResult<bool>> EncerrarAsync(Guid id, string accessToken, CancellationToken cancellationToken = default);
+    Task<ApiResult<SortearRifaResponse>> SortearAsync(Guid id, string accessToken, CancellationToken cancellationToken = default);
 }

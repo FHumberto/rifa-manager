@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RifaManager.Web.Models.Rifas;
 
-public sealed class CadastrarRifaRequest
+public sealed class EditarRifaRequest
 {
     [Required(ErrorMessage = "Informe o nome da rifa.")]
     public string Nome { get; set; } = string.Empty;
