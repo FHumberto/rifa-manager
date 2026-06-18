@@ -114,8 +114,7 @@ else
                 return;
             }
 
-            _errorMessage = result.Error?.GetDisplayMessage("Não foi possível carregar as rifas.")
-                ?? "Não foi possível carregar as rifas.";
+            _errorMessage = result.Error!.GetDisplayMessage();
         }
         catch (HttpRequestException)
         {
@@ -150,12 +149,11 @@ else
                 return;
             }
 
-            _errorMessage = result.Error?.GetDisplayMessage("Não foi possível encerrar a rifa.")
-                ?? "Não foi possível encerrar a rifa.";
+            ShowError(result.Error!.GetDisplayMessage());
         }
         catch (HttpRequestException)
         {
-            _errorMessage = "Não foi possível conectar à API. Verifique se o backend está disponível.";
+            ShowError("Não foi possível conectar à API. Verifique se o backend está disponível.");
         }
         finally
         {
@@ -187,12 +185,11 @@ else
                 return;
             }
 
-            _errorMessage = result.Error?.GetDisplayMessage("Não foi possível sortear a rifa.")
-                ?? "Não foi possível sortear a rifa.";
+            ShowError(result.Error!.GetDisplayMessage());
         }
         catch (HttpRequestException)
         {
-            _errorMessage = "Não foi possível conectar à API. Verifique se o backend está disponível.";
+            ShowError("Não foi possível conectar à API. Verifique se o backend está disponível.");
         }
         finally
         {
@@ -203,5 +200,10 @@ else
     private bool IsProcessing(Guid rifaId)
     {
         return _processingRifaId == rifaId;
+    }
+
+    private void ShowError(string message)
+    {
+        Snackbar.Add(message, Severity.Error);
     }
 }

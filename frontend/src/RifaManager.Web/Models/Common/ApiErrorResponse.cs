@@ -7,7 +7,7 @@ public sealed class ApiErrorResponse
     public string? Detail { get; set; }
     public Dictionary<string, string[]>? Errors { get; set; }
 
-    public string GetDisplayMessage(string fallback)
+    public string GetDisplayMessage(string fallback = "Não foi possível concluir a operação.")
     {
         if (Errors is { Count: > 0 })
         {

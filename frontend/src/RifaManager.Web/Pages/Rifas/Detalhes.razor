@@ -128,8 +128,7 @@ else if (_rifa is not null)
                 return;
             }
 
-            _errorMessage = result.Error?.GetDisplayMessage("Não foi possível carregar a rifa.")
-                ?? "Não foi possível carregar a rifa.";
+            _errorMessage = result.Error!.GetDisplayMessage();
         }
         catch (HttpRequestException)
         {
@@ -163,12 +162,11 @@ else if (_rifa is not null)
                 return;
             }
 
-            _errorMessage = result.Error?.GetDisplayMessage("Não foi possível encerrar a rifa.")
-                ?? "Não foi possível encerrar a rifa.";
+            ShowError(result.Error!.GetDisplayMessage());
         }
         catch (HttpRequestException)
         {
-            _errorMessage = "Não foi possível conectar à API. Verifique se o backend está disponível.";
+            ShowError("Não foi possível conectar à API. Verifique se o backend está disponível.");
         }
         finally
         {
@@ -199,16 +197,20 @@ else if (_rifa is not null)
                 return;
             }
 
-            _errorMessage = result.Error?.GetDisplayMessage("Não foi possível sortear a rifa.")
-                ?? "Não foi possível sortear a rifa.";
+            ShowError(result.Error!.GetDisplayMessage());
         }
         catch (HttpRequestException)
         {
-            _errorMessage = "Não foi possível conectar à API. Verifique se o backend está disponível.";
+            ShowError("Não foi possível conectar à API. Verifique se o backend está disponível.");
         }
         finally
         {
             _isProcessing = false;
         }
+    }
+
+    private void ShowError(string message)
+    {
+        Snackbar.Add(message, Severity.Error);
     }
 }
